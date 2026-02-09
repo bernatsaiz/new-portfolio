@@ -12,7 +12,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    concurrency: group: pages
+    concurrency:
+      group: pages
     steps:
       - name: Checkout
         uses: actions/checkout@v4
