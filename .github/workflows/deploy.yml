@@ -4,13 +4,14 @@ on:
   push:
     branches: [main, master]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
     concurrency: group: pages
     steps:
       - name: Checkout
@@ -36,7 +37,7 @@ jobs:
           path: ./dist
 
   deploy:
-    needs: build-and-deploy
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       pages: write
