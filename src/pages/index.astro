@@ -1,17 +1,240 @@
 ---
-
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { FaultyTerminalBackground } from "../components/FaultyTerminalBackground";
+import "../styles/global.css";
 ---
+<BaseLayout title="Bernat Saiz — Data Visualization & Information Design" description="Data Visualization & Information Design.">
+  <div class="landing-page">
+    <svg aria-hidden="true" class="landing-filters" focusable="false">
+      <defs>
+        <filter id="grain-edges" x="-10%" y="-10%" width="120%" height="120%">
+          <feMorphology in="SourceGraphic" operator="dilate" radius="0.5" result="dilated" />
+          <feMorphology in="SourceGraphic" operator="erode" radius="0.5" result="eroded" />
+          <feComposite in="dilated" in2="eroded" operator="out" result="edge" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="2" result="noise" />
+          <feColorMatrix in="noise" type="saturate" values="0" result="noiseMono" />
+          <feComponentTransfer in="noiseMono" result="noiseLight">
+            <feFuncR type="linear" slope="0.05" intercept="0.98" />
+            <feFuncG type="linear" slope="0.05" intercept="0.98" />
+            <feFuncB type="linear" slope="0.05" intercept="0.98" />
+            <feFuncA type="linear" slope="0.5" intercept="0.4" />
+          </feComponentTransfer>
+          <feComposite in="noiseLight" in2="edge" operator="in" result="noiseAtEdge" />
+          <feComposite in="noiseAtEdge" in2="SourceGraphic" operator="over" result="composite" />
+        </filter>
+      </defs>
+    </svg>
+    <FaultyTerminalBackground
+      client:load
+      dpr={1}
+      scale={2.2}
+      gridMul={[2, 1]}
+      digitSize={1.2}
+      timeScale={1}
+      scanlineIntensity={0}
+      glitchAmount={1}
+      flickerAmount={0}
+      curvature={0.1}
+      tint="#151437"
+      backgroundColor="#191853"
+      mouseReact={true}
+      mouseStrength={0.4}
+      pageLoadAnimation={true}
+      brightness={1}
+      chromaticAberration={0}
+      dither={0.1}
+      class="landing-bg"
+    />
+    <div class="landing-content">
+      <div class="landing-col landing-col--left">
+        <div class="landing__head">
+          <h1 class="landing__name">BERNAT SAIZ</h1>
+          <p class="landing__tagline">
+            INFORMATION<br />
+            DESIGN AND DATA VISUALIZATION
+          </p>
+        </div>
+        <p class="landing__coming">PORTFOLIO COMING SOON</p>
+      </div>
+      <div class="landing-col landing-col--right">
+        <div class="landing-globe">
+          <canvas id="globe" data-fill-color="191853" aria-hidden="true"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<script>
+  import "../scripts/globe.js";
+</script>
+
+<style>
+  .landing-page {
+    position: relative;
+    min-height: 100vh;
+    background: #191853;
+  }
+
+  .landing-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .landing-content {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: center;
+    padding: 2rem 4rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .landing-filters {
+    position: absolute;
+    width: 0;
+    height: 0;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  .landing-col--left {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .landing__head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .landing__name {
+    font-family: "Workbench", sans-serif;
+    font-size: 62px;
+    font-weight: 700;
+    line-height: normal;
+    margin: 0;
+    letter-spacing: 0;
+    color: #ffffff;
+    text-shadow: 0 0 25px #ffffff;
+    filter: url(#grain-edges);
+  }
+
+  .landing__tagline {
+    font-family: "Workbench", sans-serif;
+    font-size: 62px;
+    font-weight: 400;
+    font-variation-settings: "BLED" 0;
+    line-height: normal;
+    margin: 0;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    text-shadow: 0 0 25px #ffffff;
+    filter: url(#grain-edges);
+  }
+
+  .landing__coming {
+    font-family: "Workbench", sans-serif;
+    font-size: 36px;
+    font-weight: 500;
+    line-height: normal;
+    margin: 0;
+    margin-top: 200px;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    text-shadow: 0 0 15px #ffffff;
+    filter: url(#grain-edges);
+  }
+
+  .landing-col--right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .landing-globe {
+    width: 100%;
+    max-width: min(520px, 45vw, 100%);
+    aspect-ratio: 1;
+    flex-shrink: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+  }
+
+  .landing-globe canvas {
+    display: block;
+    flex-shrink: 0;
+    background: transparent;
+  }
+
+  @media (max-width: 900px) {
+    .landing-content {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+      gap: 0;
+      align-items: stretch;
+      padding: clamp(1.25rem, 4vw, 2rem) clamp(1.5rem, 5vw, 2rem);
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    .landing-col--left {
+      order: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: clamp(1.5rem, 4vw, 2.5rem);
+    }
+
+    .landing-col--right {
+      order: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 0;
+      min-width: 0;
+      padding-top: 0;
+      overflow: hidden;
+    }
+
+    .landing__head {
+      align-items: center;
+    }
+
+    .landing__name,
+    .landing__tagline {
+      font-size: clamp(32px, 8vw, 62px);
+      text-align: center;
+    }
+
+    .landing-globe {
+      width: 100%;
+      max-width: min(320px, 100%);
+      margin: 0 auto;
+      aspect-ratio: 1;
+    }
+
+    .landing__coming {
+      margin-top: 2.5rem;
+      text-align: center;
+    }
+  }
+</style>

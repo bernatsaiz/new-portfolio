@@ -1,0 +1,171 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { projects } from "../../data/projects";
+import type { Project } from "../../data/projects";
+import "../../styles/global.css";
+
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const project = projects.find((p) => p.slug === slug) as Project;
+
+if (!project) {
+  return Astro.redirect("/");
+}
+
+const projectImages = project.images?.length
+  ? project.images
+  : ["https://picsum.photos/seed/" + project.slug + "/800/500"];
+---
+<BaseLayout title={`${project.title} — Bernat Saiz`} description={project.subtitle}>
+  <article class="project">
+    <div class="project__wrap">
+      <a href="/#projects" class="project__back">← Back</a>
+
+      <header class="project__header">
+        <h1 class="project__title">{project.title}</h1>
+        <p class="project__subtitle">{project.subtitle}</p>
+      </header>
+
+      <section class="project__gallery" aria-label="Imatges del projecte">
+        {projectImages.map((src) => (
+          <div class="project__img-wrap">
+            <img src={src} alt="" width="800" height="500" loading="lazy" />
+          </div>
+        ))}
+      </section>
+
+      <div class="project__body">
+        <p class="project__summary">{project.summary}</p>
+        <dl class="project__meta">
+          {project.context && (
+            <>
+              <dt>Context</dt>
+              <dd>{project.context}</dd>
+            </>
+          )}
+          <dt>Role</dt>
+          <dd>{project.role}</dd>
+          {project.keyDecisions && project.keyDecisions.length > 0 && (
+            <>
+              <dt>Key decisions</dt>
+              <dd>
+                <ul>
+                  {project.keyDecisions.map((d) => (
+                    <li>{d}</li>
+                  ))}
+                </ul>
+              </dd>
+            </>
+          )}
+          <dt>Outcome</dt>
+          <dd>{project.outcome}</dd>
+        </dl>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .project {
+    padding: 2rem 0 4rem;
+  }
+
+  .project__wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .project__back {
+    font-size: 0.9375rem;
+    color: #666;
+    margin-bottom: 2rem;
+    display: inline-block;
+  }
+
+  .project__back:hover {
+    color: #eaeaea;
+  }
+
+  .project__header {
+    margin-bottom: 2.5rem;
+  }
+
+  .project__title {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .project__subtitle {
+    font-size: 1rem;
+    color: #888;
+    margin: 0;
+  }
+
+  .project__gallery {
+    margin-bottom: 2.5rem;
+  }
+
+  .project__img-wrap {
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #111;
+  }
+
+  .project__img-wrap:last-child {
+    margin-bottom: 0;
+  }
+
+  .project__img-wrap img {
+    width: 100%;
+    height: auto;
+  }
+
+  .project__body {
+    padding-top: 2rem;
+    border-top: 1px solid #222;
+  }
+
+  .project__summary {
+    margin: 0 0 1.5rem 0;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: #bbb;
+  }
+
+  .project__meta {
+    margin: 0;
+  }
+
+  .project__meta dt {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #666;
+    margin-top: 1rem;
+  }
+
+  .project__meta dt:first-child {
+    margin-top: 0;
+  }
+
+  .project__meta dd {
+    margin: 0.25rem 0 0 0;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #bbb;
+  }
+
+  .project__meta ul {
+    padding-left: 1.25rem;
+    margin: 0.25rem 0 0 0;
+  }
+</style>

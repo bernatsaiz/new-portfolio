@@ -1,0 +1,55 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/global.css";
+---
+<BaseLayout title="Experiments — Bernat Saiz" description="WebGL / Three.js experiments for the portfolio.">
+  <div class="experiments-page">
+    <a href="/" class="experiments-page__back">← Tornar</a>
+    <div class="experiments-page__canvas">
+      <canvas id="globe"></canvas>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import "../scripts/globe.js";
+</script>
+
+<style>
+  .experiments-page {
+    position: relative;
+    min-height: 100vh;
+    background: #0a0a12;
+    overflow: hidden;
+  }
+
+  .experiments-page__back {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    text-decoration: none;
+    font-family: system-ui, sans-serif;
+  }
+
+  .experiments-page__back:hover {
+    color: #fff;
+  }
+
+  .experiments-page__canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .experiments-page__canvas canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+</style>
