@@ -1,0 +1,186 @@
+---
+---
+<div class="a11y-panel-wrapper" id="a11y-panel-wrapper">
+  <button type="button" class="a11y-panel-trigger" aria-label="Opcions d'accessibilitat" aria-expanded="false" aria-controls="a11y-dialog" id="a11y-trigger">
+    <span aria-hidden="true">A</span>
+  </button>
+  <div class="a11y-panel-backdrop" id="a11y-backdrop" aria-hidden="true" hidden></div>
+  <dialog class="a11y-panel-dialog" id="a11y-dialog" aria-labelledby="a11y-dialog-title" aria-describedby="a11y-dialog-desc">
+    <div class="a11y-panel-inner">
+      <h2 id="a11y-dialog-title" class="a11y-panel-title">Opcions</h2>
+      <p id="a11y-dialog-desc" class="a11y-panel-desc">Tema, aparença i comportament. Les preferències es guarden.</p>
+
+      <div class="a11y-section">
+        <h3 class="a11y-section-title">Tema</h3>
+        <div class="a11y-options a11y-options--row">
+          <label><input type="radio" name="a11y-theme" value="dark" checked /> Fosc</label>
+          <label><input type="radio" name="a11y-theme" value="light" /> Clar</label>
+        </div>
+      </div>
+
+      <div class="a11y-section">
+        <h3 class="a11y-section-title">Aparença</h3>
+        <div class="a11y-options">
+          <span class="a11y-option-label">Mida del text</span>
+          <label><input type="radio" name="a11y-text-size" value="smaller" data-a11y="a11y-text-smaller" /> Petit</label>
+          <label><input type="radio" name="a11y-text-size" value="normal" checked data-a11y="" /> Normal</label>
+          <label><input type="radio" name="a11y-text-size" value="larger" data-a11y="a11y-text-larger" /> Gran</label>
+        </div>
+        <div class="a11y-options">
+          <label><input type="checkbox" data-a11y="a11y-contrast-aa" /> Contrast alt</label>
+          <label><input type="checkbox" data-a11y="a11y-monochrome" /> Monocrom</label>
+          <label><input type="checkbox" data-a11y="a11y-line-height" /> Més interlineat</label>
+          <label><input type="checkbox" data-a11y="a11y-line-length" /> Amplada de línia limitada</label>
+        </div>
+      </div>
+
+      <div class="a11y-section">
+        <h3 class="a11y-section-title">Comportament</h3>
+        <div class="a11y-options">
+          <label><input type="checkbox" data-a11y="a11y-no-motion" /> Sense animacions</label>
+          <label><input type="checkbox" data-a11y="a11y-no-smooth-scroll" /> Sense scroll suau</label>
+          <label><input type="checkbox" data-a11y="a11y-focus-strong" /> Focus molt visible</label>
+          <label><input type="checkbox" data-a11y="a11y-touch-targets" /> Botons més grans</label>
+        </div>
+      </div>
+
+      <div class="a11y-panel-actions">
+        <button type="button" class="a11y-reset" id="a11y-reset">Restaurar</button>
+        <button type="button" class="a11y-close" id="a11y-close">Tancar</button>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+<script is:inline>
+  (function() {
+    var A11Y_STORAGE = "a11y-prefs";
+    var THEME_STORAGE = "a11y-theme";
+    function getStored() {
+      try {
+        var raw = localStorage.getItem(A11Y_STORAGE);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) { return []; }
+    }
+    function setStored(classes) {
+      localStorage.setItem(A11Y_STORAGE, JSON.stringify(classes));
+    }
+    function getTheme() {
+      return localStorage.getItem(THEME_STORAGE) || "dark";
+    }
+    function setTheme(val) {
+      localStorage.setItem(THEME_STORAGE, val);
+      document.body.classList.toggle("theme-light", val === "light");
+    }
+    function applyClasses(classes) {
+      var root = document.documentElement;
+      var remove = ["a11y-text-smaller","a11y-text-larger","a11y-contrast-aa","a11y-contrast-aaa","a11y-monochrome","a11y-invert","a11y-line-height","a11y-letter-spacing","a11y-line-length","a11y-no-motion","a11y-no-smooth-scroll","a11y-focus-strong","a11y-touch-targets"];
+      remove.forEach(function(c){ root.classList.remove(c); });
+      classes.forEach(function(c){ root.classList.add(c); });
+    }
+    function gatherChecked() {
+      var classes = [];
+      document.querySelectorAll("[data-a11y]").forEach(function(el) {
+        if (el.type === "checkbox" && el.checked && el.dataset.a11y) classes.push(el.dataset.a11y);
+        if (el.type === "radio" && el.checked && el.dataset.a11y) classes.push(el.dataset.a11y);
+      });
+      return classes;
+    }
+    function syncInputsFromRoot() {
+      var root = document.documentElement;
+      document.querySelectorAll("[data-a11y][type='checkbox']").forEach(function(el) {
+        var c = el.dataset.a11y;
+        el.checked = !!c && root.classList.contains(c);
+      });
+      document.querySelectorAll("[name='a11y-text-size']").forEach(function(r) {
+        r.checked = false;
+      });
+      var textClass = root.classList.contains("a11y-text-smaller") ? "a11y-text-smaller" : (root.classList.contains("a11y-text-larger") ? "a11y-text-larger" : "");
+      document.querySelectorAll("[name='a11y-text-size']").forEach(function(r) {
+        if (r.dataset.a11y === textClass) r.checked = true;
+      });
+      var theme = document.body.classList.contains("theme-light") ? "light" : "dark";
+      document.querySelectorAll("[name='a11y-theme']").forEach(function(r) {
+        r.checked = r.value === theme;
+      });
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+      setTheme(getTheme());
+      applyClasses(getStored());
+      syncInputsFromRoot();
+      var dialog = document.getElementById("a11y-dialog");
+      var trigger = document.getElementById("a11y-trigger");
+      var closeBtn = document.getElementById("a11y-close");
+      var resetBtn = document.getElementById("a11y-reset");
+      if (dialog && trigger) {
+        trigger.addEventListener("click", function() {
+          dialog.showModal();
+          trigger.setAttribute("aria-expanded", "true");
+        });
+      }
+      function closeDialog() {
+        if (dialog) dialog.close();
+        if (trigger) trigger.setAttribute("aria-expanded", "false");
+      }
+      if (closeBtn) closeBtn.addEventListener("click", closeDialog);
+      if (dialog) {
+        dialog.addEventListener("cancel", function(e) { e.preventDefault(); closeDialog(); });
+        dialog.addEventListener("keydown", function(e) { if (e.key === "Escape") closeDialog(); });
+      }
+      document.querySelectorAll("[name='a11y-theme']").forEach(function(r) {
+        r.addEventListener("change", function() {
+          setTheme(this.value);
+        });
+      });
+      document.querySelectorAll("[data-a11y]").forEach(function(el) {
+        el.addEventListener("change", function() {
+          applyClasses(gatherChecked());
+          setStored(gatherChecked());
+        });
+      });
+      if (resetBtn) {
+        resetBtn.addEventListener("click", function() {
+          setTheme("dark");
+          localStorage.setItem(THEME_STORAGE, "dark");
+          applyClasses([]);
+          setStored([]);
+          document.querySelectorAll("[name='a11y-text-size']").forEach(function(r) { r.checked = r.value === "normal"; });
+          document.querySelectorAll("[name='a11y-theme']").forEach(function(r) { r.checked = r.value === "dark"; });
+          document.querySelectorAll("[data-a11y][type='checkbox']").forEach(function(c) { c.checked = false; });
+        });
+      }
+    });
+  })();
+</script>
+
+<style>
+  .a11y-panel-wrapper { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9998; }
+  .a11y-panel-trigger {
+    width: 3rem; height: 3rem; border-radius: 50%;
+    background: #0D0D1A; color: #fff; border: 2px solid rgba(255,255,255,0.3);
+    font-size: 1.25rem; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .a11y-panel-trigger:hover { background: #1a1a2e; }
+  .a11y-panel-trigger:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  .a11y-panel-dialog {
+    position: fixed; max-width: min(90vw, 420px); max-height: 85vh; overflow: auto;
+    padding: 0; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
+    background: #0D0D1A; color: #eaeaea; z-index: 9999;
+  }
+  .a11y-panel-dialog::backdrop { background: rgba(0,0,0,0.6); }
+  .a11y-panel-inner { padding: 1.5rem; }
+  .a11y-panel-title { font-size: 1.25rem; margin: 0 0 0.25rem; }
+  .a11y-panel-desc { font-size: 0.8125rem; color: #999; margin: 0 0 1.25rem; }
+  .a11y-section { margin-bottom: 1.25rem; }
+  .a11y-section-title { font-size: 0.6875rem; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; color: #777; margin: 0 0 0.5rem; }
+  .a11y-options { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; }
+  .a11y-options--row { gap: 1rem; }
+  .a11y-option-label { font-size: 0.8125rem; color: #888; margin-right: 0.5rem; }
+  .a11y-options label { font-size: 0.875rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; }
+  .a11y-panel-actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
+  .a11y-reset, .a11y-close { padding: 0.5rem 1rem; font-size: 0.875rem; border-radius: 4px; cursor: pointer; }
+  .a11y-close { background: #fff; color: #0D0D1A; border: none; }
+  .a11y-reset { background: transparent; color: #999; border: 1px solid rgba(255,255,255,0.2); }
+</style>

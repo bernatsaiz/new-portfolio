@@ -1,0 +1,385 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProjectNav from "../../components/ProjectNav.astro";
+import { projects } from "../../data/projects";
+import type { GetStaticPaths } from "astro";
+
+export const getStaticPaths: GetStaticPaths = () => {
+  return projects.map((p) => ({ params: { slug: p.slug } }));
+};
+
+const { slug } = Astro.params;
+const project = projects.find((p) => p.slug === slug);
+if (!project) return Astro.redirect("/");
+
+const currentIndex = projects.findIndex((p) => p.slug === slug);
+const total = projects.length;
+---
+<BaseLayout
+  title={`${project.title} — Bernat Saiz`}
+  description={project.subtitle}
+  variant="interior"
+>
+  <header class="interior-header">
+    <a href="/#work" aria-label="Tornar al llistat de projectes"><span class="back-arrow" aria-hidden="true">&larr;</span> Back</a>
+    <span class="header__counter">
+      {String(currentIndex + 1).padStart(2, "0")}/{String(total).padStart(2, "0")}&ensp;{project.title}
+    </span>
+  </header>
+
+  <article class="interior-container">
+    <!-- Title block -->
+    <section class="work__hero">
+      <h1>{project.title}</h1>
+      <p class="work__subtitle">{project.subtitle}</p>
+    </section>
+
+    <hr class="separator" />
+
+    <!-- Metadata: Context + Role 50% | Year + Tools bloc -->
+    <section class="work__meta">
+      <div class="work__meta-main">
+        {project.context && (
+          <div class="work__meta-item work__meta-item--half">
+            <h2>Context</h2>
+            <p>{project.context}</p>
+          </div>
+        )}
+        <div class="work__meta-item work__meta-item--half">
+          <h2>Role</h2>
+          <p>{project.role}</p>
+        </div>
+      </div>
+      <div class="work__meta-extra">
+        <span class="work__meta-extra-item"><strong>Year</strong> {project.year}</span>
+        {project.tools && project.tools.length > 0 && (
+          <span class="work__meta-extra-item"><strong>Tools</strong> {project.tools.join(", ")}</span>
+        )}
+      </div>
+    </section>
+
+    <hr class="separator" />
+
+    <!-- Gallery -->
+    {project.images && project.images.length > 0 && (
+      <section class="work__gallery">
+        {project.images.map((src, i) => (
+          <div class="work__gallery-item">
+            <img
+              src={src}
+              alt={`${project.title} — screenshot ${i + 1}`}
+              width="1200"
+              height="675"
+              loading={i === 0 ? "eager" : "lazy"}
+            />
+          </div>
+        ))}
+      </section>
+    )}
+
+    <hr class="separator" />
+
+    <!-- Summary -->
+    <section class="work__body">
+      {project.summary.split("\n\n").map((paragraph) => (
+        <p>{paragraph}</p>
+      ))}
+    </section>
+
+    <!-- Key Decisions -->
+    {project.keyDecisions && project.keyDecisions.length > 0 && (
+      <>
+        <hr class="separator" />
+        <section class="work__decisions">
+          <h2>Key Decisions</h2>
+          <ol class="work__decisions-list">
+            {project.keyDecisions.map((d, i) => (
+              <li>
+                <span class="decision__num">{String(i + 1).padStart(2, "0")}.</span>
+                {d}
+              </li>
+            ))}
+          </ol>
+        </section>
+      </>
+    )}
+
+    <!-- Outcome -->
+    <hr class="separator" />
+    <section class="work__outcome">
+      <h2>Outcome</h2>
+      <p class="work__outcome-text">{project.outcome}</p>
+    </section>
+
+    <!-- Tags -->
+    {project.tags && project.tags.length > 0 && (
+      <div class="work__tags">
+        {project.tags.map((tag) => (
+          <span class="work__tag">{tag}</span>
+        ))}
+      </div>
+    )}
+
+    <!-- Project Navigation -->
+    <ProjectNav currentSlug={project.slug} />
+  </article>
+</BaseLayout>
+
+<style>
+  .interior-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem var(--content-padding);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+
+  .interior-header a {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #666;
+    text-decoration: none;
+    transition: color var(--motion-duration) var(--motion-ease);
+  }
+
+  .interior-header a:hover {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .header__counter {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #444;
+  }
+
+  .interior-container {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 4rem var(--content-padding) 8rem;
+  }
+
+  .separator {
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin: 3.5rem 0;
+  }
+
+  /* Hero */
+  .work__hero h1 {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.75rem;
+    color: #fff;
+  }
+
+  .work__subtitle {
+    font-family: "JetBrains Mono", monospace;
+    font-size: clamp(0.875rem, 1.2vw, 1.0625rem);
+    line-height: 1.6;
+    color: #888;
+    margin: 0;
+    max-width: 600px;
+  }
+
+  /* Metadata: row 1 = Context 50% | Role 50%, row 2 = Year + Tools */
+  .work__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .work__meta-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem 3rem;
+  }
+
+  .work__meta-item--half {
+    min-width: 0;
+  }
+
+  .work__meta-extra {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem 2.5rem;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.9375rem;
+    color: #999;
+  }
+
+  .work__meta-extra-item strong {
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #555;
+    margin-right: 0.5rem;
+  }
+
+  .work__meta h2 {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #555;
+    margin: 0 0 0.5rem;
+  }
+
+  .work__meta p {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: #ccc;
+    margin: 0;
+  }
+
+  /* Gallery */
+  .work__gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .work__gallery-item {
+    border-radius: 4px;
+    overflow: hidden;
+    background: #111;
+  }
+
+  .work__gallery-item img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Body */
+  .work__body p {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    color: #bbb;
+    margin: 0 0 1.75rem;
+    max-width: 680px;
+  }
+
+  /* Key Decisions */
+  .work__decisions h2 {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #555;
+    margin: 0 0 1.5rem;
+  }
+
+  .work__decisions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .work__decisions-list li {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: #999;
+  }
+
+  .decision__num {
+    color: #555;
+    margin-right: 0.5rem;
+    font-weight: 600;
+  }
+
+  /* Outcome */
+  .work__outcome h2 {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #555;
+    margin: 0 0 1.25rem;
+  }
+
+  .work__outcome-text {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    color: #ccc;
+    margin: 0;
+    max-width: 680px;
+  }
+
+  /* Tags */
+  .work__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 3rem;
+  }
+
+  .work__tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    color: #666;
+    transition: color var(--motion-duration) var(--motion-ease),
+      border-color var(--motion-duration) var(--motion-ease),
+      background-color var(--motion-duration) var(--motion-ease);
+  }
+
+  .work__tag:hover {
+    color: #999;
+    border-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.04);
+  }
+
+  @media (max-width: 640px) {
+    .work__meta-main {
+      grid-template-columns: 1fr;
+    }
+    .interior-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 1.25rem var(--content-padding);
+    }
+
+    .interior-container {
+      padding: 2rem var(--content-padding) 4rem;
+    }
+
+    .work__meta {
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem 1.5rem;
+    }
+
+    .work__gallery {
+      gap: 0.75rem;
+    }
+  }
+</style>

@@ -124,11 +124,15 @@ float digit(vec2 p){
     
     if(uUseMouse > 0.5){
         vec2 mouseWorld = uMouse * uScale;
-        float distToMouse = distance(s, mouseWorld);
+        vec2 diff = s - mouseWorld;
+        float baseDist = length(diff);
+        float angle = atan(diff.y, diff.x);
+        float blobWobble = 1.0 + 0.08 * sin(angle * 4.0 + iTime * 2.0) + 0.06 * sin(angle * 6.0 - iTime * 1.2);
+        float distToMouse = baseDist * blobWobble;
         float mouseInfluence = exp(-distToMouse * 8.0) * uMouseStrength * 10.0;
         intensity += mouseInfluence;
         
-        float ripple = sin(distToMouse * 20.0 - iTime * 5.0) * 0.1 * mouseInfluence;
+        float ripple = sin(baseDist * 20.0 - iTime * 5.0) * 0.1 * mouseInfluence;
         intensity += ripple;
     }
     

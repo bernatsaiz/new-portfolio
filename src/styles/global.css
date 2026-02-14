@@ -1,4 +1,7 @@
-/* Portfolio — from scratch, Midjourney-inspired interactivity */
+/* Portfolio — Bernat Saiz
+   Grid: single content width and padding for alignment across sections. */
+
+/* Content grid vars also defined in BaseLayout for interior pages */
 
 *,
 *::before,
@@ -17,7 +20,7 @@ body {
   min-height: 100vh;
   background: #191853;
   color: #eaeaea;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: "JetBrains Mono", monospace;
   font-size: 1rem;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -43,9 +46,9 @@ img {
   display: block;
 }
 
-/* FaultyTerminalBackground container (full-screen WebGL) */
+/* FaultyTerminalBackground container (scrolls with page inside .hero) */
 .faulty-terminal-bg {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -53,4 +56,65 @@ img {
   z-index: 0;
   overflow: hidden;
   background: #191853;
+}
+
+/* ---- Interior page utilities ---- */
+
+.interior-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2.5rem var(--content-padding);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  max-width: var(--content-max);
+  margin: 0 auto;
+}
+
+.interior-header a {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #666;
+  text-decoration: none;
+  transition: color var(--motion-duration) var(--motion-ease);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.interior-header a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+.interior-header a .back-arrow {
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .interior-header a .back-arrow {
+    transition: transform var(--motion-duration) var(--motion-ease);
+  }
+  .interior-header a:hover .back-arrow {
+    transform: translateX(-0.2em);
+  }
+}
+
+.interior-container {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 5rem var(--content-padding) 10rem;
+}
+
+.interior-container--narrow {
+  max-width: 640px;
+}
+
+/* Separator line for interior pages */
+.separator {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 3rem 0;
 }

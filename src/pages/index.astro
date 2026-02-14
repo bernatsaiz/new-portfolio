@@ -1,240 +1,1193 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { FaultyTerminalBackground } from "../components/FaultyTerminalBackground";
+import TextScramble from "../components/TextScramble.astro";
+import RotatingLine from "../components/RotatingLine.astro";
+import { projects } from "../data/projects";
+import { otherWork } from "../data/otherWork";
+import { experiments } from "../data/experiments";
 import "../styles/global.css";
+
 ---
-<BaseLayout title="Bernat Saiz — Data Visualization & Information Design" description="Data Visualization & Information Design.">
-  <div class="landing-page">
-    <svg aria-hidden="true" class="landing-filters" focusable="false">
-      <defs>
-        <filter id="grain-edges" x="-10%" y="-10%" width="120%" height="120%">
-          <feMorphology in="SourceGraphic" operator="dilate" radius="0.5" result="dilated" />
-          <feMorphology in="SourceGraphic" operator="erode" radius="0.5" result="eroded" />
-          <feComposite in="dilated" in2="eroded" operator="out" result="edge" />
-          <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="2" result="noise" />
-          <feColorMatrix in="noise" type="saturate" values="0" result="noiseMono" />
-          <feComponentTransfer in="noiseMono" result="noiseLight">
-            <feFuncR type="linear" slope="0.05" intercept="0.98" />
-            <feFuncG type="linear" slope="0.05" intercept="0.98" />
-            <feFuncB type="linear" slope="0.05" intercept="0.98" />
-            <feFuncA type="linear" slope="0.5" intercept="0.4" />
-          </feComponentTransfer>
-          <feComposite in="noiseLight" in2="edge" operator="in" result="noiseAtEdge" />
-          <feComposite in="noiseAtEdge" in2="SourceGraphic" operator="over" result="composite" />
-        </filter>
-      </defs>
-    </svg>
+<BaseLayout title="Bernat Saiz — Data Visualization & Information Design" description="Data Visualization & Information Design." variant="landing">
+
+  <section class="hero">
     <FaultyTerminalBackground
       client:load
       dpr={1}
       scale={2.2}
       gridMul={[2, 1]}
       digitSize={1.2}
-      timeScale={1}
+      timeScale={2.2}
       scanlineIntensity={0}
-      glitchAmount={1}
-      flickerAmount={0}
+      glitchAmount={1.15}
+      flickerAmount={0.25}
       curvature={0.1}
       tint="#151437"
       backgroundColor="#191853"
       mouseReact={true}
-      mouseStrength={0.4}
+      mouseStrength={0.7}
       pageLoadAnimation={true}
       brightness={1}
       chromaticAberration={0}
       dither={0.1}
-      class="landing-bg"
+      class="hero__bg"
     />
-    <div class="landing-content">
-      <div class="landing-col landing-col--left">
-        <div class="landing__head">
-          <h1 class="landing__name">BERNAT SAIZ</h1>
-          <p class="landing__tagline">
-            INFORMATION<br />
-            DESIGN AND DATA VISUALIZATION
-          </p>
-        </div>
-        <p class="landing__coming">PORTFOLIO COMING SOON</p>
+    <div class="hero__content">
+      <div class="hero__top">
+        <h1 class="hero__name"><TextScramble text="Bernat Saiz" /></h1>
+        <p class="hero__tagline"><TextScramble text="Information Design & Data Visualization" /></p>
       </div>
-      <div class="landing-col landing-col--right">
-        <div class="landing-globe">
-          <canvas id="globe" data-fill-color="191853" aria-hidden="true"></canvas>
+
+      <div class="hero__bottom">
+        <div class="hero__context">
+          <RotatingLine
+            lines={[
+              "Currently at Domestic Data Streamers",
+              "Previously leading design at Verificat",
+              "BCN / CAT / ES",
+            ]}
+            interval={4000}
+            class="hero__rotating"
+          />
         </div>
+        <nav class="hero__nav" aria-label="Navegació principal">
+          <TextScramble text="01 WORK" href="#work" class="hero__nav-link" />
+          <TextScramble text="02 EXPERIMENTS" href="#experiments" class="hero__nav-link" />
+          <TextScramble text="03 INFO" href="#info" class="hero__nav-link" />
+        </nav>
       </div>
     </div>
-  </div>
+  </section>
+
+  <section class="intro" id="info" aria-labelledby="intro-heading">
+    <div class="intro__inner">
+      <p class="intro__bio">
+        Information designer and data journalist specialized in visual storytelling
+        for editorial, civic, and public-interest contexts. Focused on transforming
+        complex information into clear, honest, and structured visual systems.
+      </p>
+      <a href="/info" class="intro__link"><TextScramble text="Full profile " tag="span" /> <span class="link-arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+  </section>
+
+  <section class="work" id="work" aria-labelledby="work-heading">
+    <div class="work__inner">
+      <header class="work__header">
+        <h2 id="work-heading" class="section-label">Selected Work</h2>
+      </header>
+
+      <div class="work__list">
+      {projects.map((project, i) => (
+        <article class="project-card" style={`--stagger: ${i}`}>
+          <a href={`/work/${project.slug}`} class="project-card__image-link">
+            <img
+              src={project.images[0]}
+              alt={project.title}
+              width="1200"
+              height="675"
+              loading={i < 2 ? "eager" : "lazy"}
+              class="project-card__img"
+            />
+          </a>
+          <div class="project-card__body">
+            <span class="project-card__num">{String(i + 1).padStart(2, "0")}</span>
+            <h3 class="project-card__title">
+              <a href={`/work/${project.slug}`}>{project.title}</a>
+            </h3>
+            <p class="project-card__subtitle">{project.subtitle}</p>
+            <div class="project-card__meta">
+              <span>{project.year}</span>
+              {project.tools && project.tools.length > 0 && (
+                <>
+                  <span class="project-card__dot">&middot;</span>
+                  <span>{project.tools.slice(0, 3).join(", ")}</span>
+                </>
+              )}
+            </div>
+            <a href={`/work/${project.slug}`} class="project-card__link">
+              <TextScramble text="View project " tag="span" /> <span class="link-arrow" aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </article>
+      ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="other-work" id="other-work" aria-labelledby="other-work-heading">
+    <div class="other-work__inner">
+      <header class="other-work__header">
+        <h2 id="other-work-heading" class="section-label">Other relevant work</h2>
+        <p class="other-work__intro">A talk and a podcast—media, journalism, and creative formats I'm proud of, outside the main design portfolio.</p>
+      </header>
+      <div class="other-work__list">
+        {otherWork.map((item, i) => (
+          <article class="other-work-card" style={`--stagger: ${i}`}>
+            {item.image ? (
+              <a href={item.url} target="_blank" rel="noopener noreferrer" class="other-work-card__image-link">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  width="800"
+                  height="450"
+                  loading="lazy"
+                  class="other-work-card__img"
+                />
+              </a>
+            ) : (
+              <a href={item.url} target="_blank" rel="noopener noreferrer" class="other-work-card__placeholder">
+                <span class="other-work-card__kind">{item.kind}</span>
+              </a>
+            )}
+            <div class="other-work-card__body">
+              <span class="other-work-card__kind-label">{item.kind}</span>
+              <h3 class="other-work-card__title">
+                <a href={item.url} target="_blank" rel="noopener noreferrer">{item.title}</a>
+              </h3>
+              <p class="other-work-card__subtitle">{item.subtitle}</p>
+              {item.year && (
+                <span class="other-work-card__meta">{item.year}</span>
+              )}
+              <a href={item.url} target="_blank" rel="noopener noreferrer" class="other-work-card__link">
+                {item.ctaText} <span class="link-arrow" aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="experiments" id="experiments" aria-labelledby="experiments-heading">
+    <div class="experiments__inner">
+      <header class="experiments__header">
+        <h2 id="experiments-heading" class="section-label">Experiments</h2>
+        <p class="experiments__intro">Small experiments and prototypes made with vibe coding (AI-assisted).</p>
+      </header>
+      <div class="experiments__list">
+        {experiments.map((exp, i) => (
+          <article class="experiment-card" style={`--stagger: ${i}`}>
+            <a href={exp.url} target="_blank" rel="noopener noreferrer" class="experiment-card__image-link">
+              <img
+                src={exp.image}
+                alt={exp.title}
+                width="800"
+                height="450"
+                loading="lazy"
+                class="experiment-card__img"
+              />
+            </a>
+            <div class="experiment-card__body">
+              <span class="experiment-card__badge">Vibe coding</span>
+              <h3 class="experiment-card__title">
+                <a href={exp.url} target="_blank" rel="noopener noreferrer">{exp.title}</a>
+              </h3>
+              <p class="experiment-card__desc">{exp.shortDescription}</p>
+              {exp.year && (
+                <span class="experiment-card__meta">{exp.year}</span>
+              )}
+              <a href={exp.url} target="_blank" rel="noopener noreferrer" class="experiment-card__link">
+                View demo <span class="link-arrow" aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer" id="contact">
+    <div class="site-footer__inner">
+      <p class="site-footer__contact">
+        <a href="mailto:bernatsaiz@gmail.com">bernatsaiz@gmail.com</a>
+        <span class="site-footer__sep">&middot;</span>
+        <a href="https://www.linkedin.com/in/bernatsaiz/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn (opens in new window)">LinkedIn</a>
+        <span class="site-footer__sep">&middot;</span>
+        <span>Barcelona</span>
+      </p>
+      <a href="/info" class="site-footer__profile"><TextScramble text="Full profile " tag="span" /> <span class="link-arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+  </footer>
+
 </BaseLayout>
 
 <script>
-  import "../scripts/globe.js";
+  function initSectionReveal() {
+    const sections = document.querySelectorAll<HTMLElement>(".intro, .work, .other-work, .experiments");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in-view");
+          }
+        });
+      },
+      { rootMargin: "0px 0px -12% 0px", threshold: 0 }
+    );
+    sections.forEach((el) => observer.observe(el));
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initSectionReveal);
+  } else {
+    initSectionReveal();
+  }
 </script>
 
 <style>
-  .landing-page {
+  :root {
+    --home-content-max: 1100px;
+    --work-content-max: 1200px;
+  }
+
+  .section-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #999;
+    margin: 0;
+  }
+
+  .hero {
     position: relative;
-    min-height: 100vh;
+    min-height: 85vh;
     background: #191853;
   }
 
-  .landing-bg {
-    position: fixed;
+  .hero__bg {
+    position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     z-index: 0;
   }
 
-  .landing-content {
+  .hero__content {
     position: relative;
     z-index: 1;
-    min-height: 100vh;
+    min-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 65px var(--content-padding) clamp(3.5rem, 8vh, 6.5rem);
+    margin: 0;
+  }
+
+  .hero__top {
+    padding-top: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__name {
+      animation: heroFadeIn 0.6s var(--motion-ease-out) both;
+    }
+    .hero__tagline {
+      animation: heroFadeIn 0.5s var(--motion-ease-out) 0.08s both;
+    }
+  }
+
+  @keyframes heroFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(0.4rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero__name {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-size: clamp(40px, 6vw, 88px);
+    font-weight: 400;
+    line-height: 0.9;
+    margin: 0;
+    margin-left: -5px;
+    letter-spacing: -0.03em;
+    color: #fff;
+  }
+
+  .hero__tagline {
+    font-family: "JetBrains Mono", monospace;
+    font-size: clamp(14px, 1.5vw, 20px);
+    font-weight: 400;
+    line-height: 1.5;
+    margin: 1.75rem 0 0;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .hero__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    padding-bottom: 0;
+  }
+
+  .hero__context {
+    display: flex;
+    align-items: center;
+  }
+
+  .hero__context :global(.hero__rotating) {
+    font-family: "JetBrains Mono", monospace;
+    font-size: clamp(1rem, 1.4vw, 1.25rem);
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.55);
+    letter-spacing: 0.04em;
+  }
+
+  .hero__nav {
+    display: flex;
+    gap: 2.5rem;
+  }
+
+  .hero__nav :global(.hero__nav-link) {
+    font-family: "JetBrains Mono", monospace;
+    font-size: clamp(0.875rem, 1.1vw, 1.0625rem);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+    text-decoration: none;
+    transition: opacity var(--motion-duration) var(--motion-ease);
+  }
+
+  .hero__nav :global(.hero__nav-link:hover) {
+    opacity: 0.6;
+    text-decoration: none;
+  }
+
+  .intro {
+    position: relative;
+    z-index: 2;
+    background: #000;
+    padding: 5rem 0 80px;
+    border-top: none;
+  }
+
+  .intro__inner {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .intro__bio {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-size: 2em;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: -0.02em;
+    color: #ddd;
+    margin: 0 0 1.5rem;
+    max-width: 100%;
+  }
+
+  /* Desktop: contenidor centrat i amplada màxima per millorar llegibilitat */
+  @media (min-width: 1024px) {
+    .intro__inner {
+      max-width: var(--work-content-max);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .intro__bio {
+      max-width: 70ch;
+    }
+
+    .site-footer__inner {
+      max-width: var(--home-content-max);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .intro {
+      padding-left: max(var(--content-padding), 4rem);
+      padding-right: max(var(--content-padding), 4rem);
+    }
+
+    .work,
+    .other-work,
+    .experiments {
+      padding-left: max(var(--content-padding), 4rem);
+      padding-right: max(var(--content-padding), 4rem);
+    }
+  }
+
+  .intro__link {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    color: #999;
+    text-decoration: none;
+    transition: color var(--motion-duration) var(--motion-ease);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+  }
+
+  .intro__link:hover {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .work {
+    position: relative;
+    z-index: 2;
+    background: #000;
+    padding: 6rem var(--content-padding) 5rem;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .work__inner {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .work__inner {
+      max-width: var(--work-content-max);
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  .work__header {
+    margin: 0 0 5rem;
+    padding-bottom: 2rem;
+    padding-left: 1.25rem;
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+    border-bottom: none;
+  }
+
+  .work__header .section-label {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #ccc;
+    opacity: 0;
+    transform: translateY(0.4rem);
+    transition: opacity var(--motion-duration) var(--motion-ease-out),
+      transform var(--motion-duration) var(--motion-ease-out);
+  }
+
+  .work.in-view .work__header .section-label {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work__header .section-label,
+    .other-work__header .section-label,
+    .experiments__header .section-label {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .work__list {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    align-items: center;
-    padding: 2rem 4rem;
-    max-width: 1400px;
-    margin: 0 auto;
+    gap: 5rem 3.5rem;
   }
 
-  .landing-filters {
-    position: absolute;
-    width: 0;
-    height: 0;
-    margin: -1px;
-    padding: 0;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
+
+  @media (prefers-reduced-motion: no-preference) {
+    .project-card {
+      animation: cardReveal 0.55s var(--motion-ease-out) both;
+      animation-delay: calc(var(--stagger, 0) * 0.07s);
+    }
   }
 
-  .landing-col--left {
+  @keyframes cardReveal {
+    from {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .project-card {
     display: flex;
     flex-direction: column;
     gap: 0;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    overflow: hidden;
+    background: transparent;
   }
 
-  .landing__head {
+  .project-card__image-link {
+    display: block;
+    overflow: hidden;
+    background: #0a0a12;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px 8px 0 0;
+  }
+
+  .project-card__img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+  }
+
+  .project-card__body {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    flex: 1;
+    gap: 0.5rem;
+    padding: 1.5rem 1.5rem 1.5rem;
   }
 
-  .landing__name {
-    font-family: "Workbench", sans-serif;
-    font-size: 62px;
-    font-weight: 700;
-    line-height: normal;
-    margin: 0;
-    letter-spacing: 0;
-    color: #ffffff;
-    text-shadow: 0 0 25px #ffffff;
-    filter: url(#grain-edges);
-  }
-
-  .landing__tagline {
-    font-family: "Workbench", sans-serif;
-    font-size: 62px;
+  .project-card__num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.6875rem;
     font-weight: 400;
-    font-variation-settings: "BLED" 0;
-    line-height: normal;
-    margin: 0;
-    letter-spacing: -0.02em;
-    color: #ffffff;
-    text-shadow: 0 0 25px #ffffff;
-    filter: url(#grain-edges);
+    letter-spacing: 0.1em;
+    color: #444;
   }
 
-  .landing__coming {
-    font-family: "Workbench", sans-serif;
-    font-size: 36px;
-    font-weight: 500;
-    line-height: normal;
-    margin: 0;
-    margin-top: 200px;
+  .project-card__title {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-size: clamp(1.125rem, 1.8vw, 1.5rem);
+    font-weight: 400;
+    line-height: 1.1;
     letter-spacing: -0.02em;
-    color: #ffffff;
-    text-shadow: 0 0 15px #ffffff;
-    filter: url(#grain-edges);
+    margin: 0;
+    color: #fff;
   }
 
-  .landing-col--right {
+  .project-card__title a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity var(--motion-duration) var(--motion-ease);
+  }
+
+  .project-card__title a:hover {
+    text-decoration: none;
+    opacity: 0.85;
+  }
+
+  .project-card__title a:focus-visible,
+  .project-card__link:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.7);
+    outline-offset: 3px;
+  }
+
+  .project-card__subtitle {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #888;
+    margin: 0;
+  }
+
+  .project-card__meta {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: #888;
+    margin-top: 0.75rem;
+    margin-bottom: 12px;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
-    min-height: 60vh;
-    min-width: 0;
-    overflow: hidden;
+    gap: 0.4rem;
   }
 
-  .landing-globe {
+  .project-card__dot {
+    color: #333;
+  }
+
+  .project-card__link {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: #888;
+    text-decoration: none;
+    margin-top: auto;
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.25em;
+    transition: color var(--motion-duration) var(--motion-ease);
+  }
+
+  .project-card__link .link-arrow {
+    display: inline-block;
+    transition: transform var(--motion-duration) var(--motion-ease);
+  }
+
+  .project-card__link:hover {
+    color: #fff;
+    text-decoration: none;
+    opacity: 1;
+  }
+
+  .project-card__link:hover .link-arrow {
+    transform: translateX(0.2em);
+  }
+
+  .project-card__image-link:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.7);
+    outline-offset: 3px;
+  }
+
+  /* ---- Other relevant work ---- */
+  .other-work {
+    position: relative;
+    z-index: 2;
+    background: #000;
+    padding: 5rem var(--content-padding) 5rem;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .other-work__inner {
     width: 100%;
-    max-width: min(520px, 45vw, 100%);
-    aspect-ratio: 1;
-    flex-shrink: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: transparent;
+    max-width: 100%;
+    margin: 0;
   }
 
-  .landing-globe canvas {
-    display: block;
-    flex-shrink: 0;
-    background: transparent;
+  @media (min-width: 1024px) {
+    .other-work__inner {
+      max-width: var(--work-content-max);
+      margin-left: auto;
+      margin-right: auto;
+    }
   }
+
+  .other-work__header {
+    margin: 0 0 2.5rem;
+    padding-bottom: 1.25rem;
+    padding-left: 1.25rem;
+    border-left: 2px solid rgba(120, 150, 255, 0.6);
+    border-bottom: none;
+  }
+
+  .other-work__intro {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.875rem;
+    color: #7a8fc4;
+    margin-top: 0.75rem;
+    margin-bottom: 0;
+    margin-left: calc(-1 * (var(--content-padding) + 1.25rem));
+    width: 100vw;
+    padding-left: calc(var(--content-padding) + 1.25rem);
+    padding-right: var(--content-padding);
+    box-sizing: border-box;
+  }
+
+  .other-work__header .section-label {
+    color: #9ab0e8;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(0.4rem);
+    transition: opacity var(--motion-duration) var(--motion-ease-out),
+      transform var(--motion-duration) var(--motion-ease-out);
+  }
+
+  .other-work.in-view .other-work__header .section-label {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .other-work__list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem 3.5rem;
+  }
+
+  .other-work-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid rgba(120, 150, 255, 0.32);
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(100, 130, 255, 0.06);
+  }
+
+  .other-work-card__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 140px;
+    background: rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid rgba(120, 150, 255, 0.32);
+    text-decoration: none;
+    transition: background 0.2s ease;
+  }
+
+  .other-work-card__placeholder:hover {
+    background: rgba(255, 255, 255, 0.04);
+    text-decoration: none;
+  }
+
+  .other-work-card__placeholder .other-work-card__kind {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #555;
+  }
+
+  .other-work-card__image-link {
+    display: block;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(120, 150, 255, 0.32);
+    border-radius: 8px 8px 0 0;
+  }
+
+  .other-work-card__img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+  }
+
+  .other-work-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.5rem 1.5rem 1.5rem;
+  }
+
+  .other-work-card__kind-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.5625rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6a6a8a;
+  }
+
+  .other-work-card__title {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-size: clamp(1.125rem, 1.8vw, 1.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0;
+    color: #fff;
+  }
+
+  .other-work-card__title a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity var(--motion-duration) var(--motion-ease);
+  }
+
+  .other-work-card__title a:hover {
+    text-decoration: none;
+    opacity: 0.85;
+  }
+
+  .other-work-card__subtitle {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #888;
+    margin: 0;
+  }
+
+  .other-work-card__meta {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: #888;
+  }
+
+  .other-work-card__link {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: #888;
+    text-decoration: none;
+    margin-top: 1.25rem;
+    transition: color var(--motion-duration) var(--motion-ease);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+  }
+
+  .other-work-card__link:hover {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  /* ---- Experiments ---- */
+  .experiments {
+    position: relative;
+    z-index: 2;
+    background: #000;
+    padding: 5rem var(--content-padding) 5rem;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .experiments__inner {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .experiments__inner {
+      max-width: var(--work-content-max);
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  .experiments__header {
+    margin: 0 0 2.5rem;
+    padding-bottom: 1.25rem;
+    padding-left: 1.25rem;
+    border-left: 2px solid rgba(200, 150, 255, 0.7);
+    border-bottom: none;
+  }
+
+  .experiments__header .section-label {
+    color: #c8b0e8;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(0.4rem);
+    transition: opacity var(--motion-duration) var(--motion-ease-out),
+      transform var(--motion-duration) var(--motion-ease-out);
+  }
+
+  .experiments.in-view .experiments__header .section-label {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .experiments__intro {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.875rem;
+    color: #a090b8;
+    margin-top: 0.75rem;
+    margin-bottom: 0;
+    margin-left: calc(-1 * (var(--content-padding) + 1.25rem));
+    width: 100vw;
+    padding-left: calc(var(--content-padding) + 1.25rem);
+    padding-right: var(--content-padding);
+    box-sizing: border-box;
+  }
+
+  .experiments__list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem 3.5rem;
+  }
+
+  .experiment-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid rgba(200, 150, 255, 0.32);
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(180, 140, 255, 0.06);
+  }
+
+  .experiment-card__image-link {
+    display: block;
+    overflow: hidden;
+    background: #0f0a14;
+    border-bottom: 1px solid rgba(200, 150, 255, 0.32);
+    border-radius: 8px 8px 0 0;
+  }
+
+  .experiment-card__img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+  }
+
+  .experiment-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.5rem 1.5rem 1.5rem;
+  }
+
+  .experiment-card__badge {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.5625rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6a6a8a;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    padding: 0.25rem 0.5rem;
+    width: fit-content;
+  }
+
+  .experiment-card__title {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-size: clamp(1.125rem, 1.8vw, 1.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0;
+    color: #fff;
+  }
+
+  .experiment-card__title a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity var(--motion-duration) var(--motion-ease);
+  }
+
+  .experiment-card__title a:hover {
+    text-decoration: none;
+    opacity: 0.85;
+  }
+
+  .experiment-card__desc {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #888;
+    margin: 0;
+  }
+
+  .experiment-card__meta {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: #888;
+  }
+
+  .experiment-card__link {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: #888;
+    text-decoration: none;
+    margin-top: 1.25rem;
+    transition: color var(--motion-duration) var(--motion-ease);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+  }
+
+  .experiment-card__link:hover {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .site-footer {
+    position: relative;
+    z-index: 2;
+    background: #0D0D1A;
+    padding: 2rem var(--content-padding) 3rem;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .site-footer__inner {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .site-footer__contact {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.875rem;
+    color: #999;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .site-footer__contact a {
+    color: #bbb;
+    text-decoration: none;
+    transition: color var(--motion-duration) var(--motion-ease);
+  }
+
+  .site-footer__contact a:hover {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .site-footer__sep {
+    color: #444;
+  }
+
+  .site-footer__profile {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8125rem;
+    color: #888;
+    text-decoration: none;
+    transition: color var(--motion-duration) var(--motion-ease);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+  }
+
+  .site-footer__profile:hover {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  body.theme-light .hero { background: #e0e4f0; }
+  body.theme-light .intro { background: #f0f0f0; }
+  body.theme-light .work { background: #f0f0f0; }
+  body.theme-light .other-work { background: #f0f0f0; }
+  body.theme-light .experiments { background: #f0f0f0; }
+  body.theme-light .site-footer { background: #f0f0f0; border-top-color: rgba(0,0,0,0.08); }
+  body.theme-light .intro__bio { color: #1a1a2e; }
+  body.theme-light .intro__link { color: #555; }
+  body.theme-light .intro__link:hover { color: #000; }
+  body.theme-light .site-footer__contact { color: #555; }
+  body.theme-light .site-footer__contact a { color: #333; }
+  body.theme-light .site-footer__contact a:hover { color: #000; }
+  body.theme-light .site-footer__profile { color: #555; }
+  body.theme-light .site-footer__profile:hover { color: #000; }
+  body.theme-light .hero__name,
+  body.theme-light .hero__tagline { color: #1a1a2e; }
+  body.theme-light .hero__context :global(.hero__rotating) { color: #444; }
+  body.theme-light .hero__nav :global(.hero__nav-link) { color: #1a1a2e; }
+  body.theme-light .project-card { border-color: rgba(0,0,0,0.1); }
+  body.theme-light .project-card__title,
+  body.theme-light .project-card__title a { color: #1a1a2e; }
+  body.theme-light .project-card__subtitle,
+  body.theme-light .project-card__meta,
+  body.theme-light .project-card__link { color: #555; }
+  body.theme-light .project-card__link:hover { color: #000; }
+  body.theme-light .other-work-card { border-color: rgba(0,0,0,0.08); }
+  body.theme-light .other-work-card__title,
+  body.theme-light .other-work-card__title a { color: #1a1a2e; }
+  body.theme-light .other-work-card__subtitle,
+  body.theme-light .other-work-card__meta,
+  body.theme-light .other-work-card__link { color: #555; }
+  body.theme-light .other-work-card__link:hover { color: #000; }
+  body.theme-light .experiment-card { border-color: rgba(0,0,0,0.08); }
+  body.theme-light .experiment-card__title,
+  body.theme-light .experiment-card__title a { color: #1a1a2e; }
+  body.theme-light .experiment-card__desc,
+  body.theme-light .experiment-card__meta,
+  body.theme-light .experiment-card__link { color: #555; }
+  body.theme-light .experiment-card__link:hover { color: #000; }
+  body.theme-light .work__header { border-left-color: rgba(0,0,0,0.25); }
+  body.theme-light .other-work__header .section-label { color: #4a5a9a; }
+  body.theme-light .other-work__intro { color: #4a5a8a; }
+  body.theme-light .other-work__header { border-left-color: rgba(80, 100, 180, 0.5); }
+  body.theme-light .other-work-card { border-color: rgba(80, 100, 180, 0.2); background: rgba(80, 100, 180, 0.04); }
+  body.theme-light .experiments__header .section-label { color: #6a5a8a; }
+  body.theme-light .experiments__header { border-left-color: rgba(120, 80, 160, 0.5); }
+  body.theme-light .experiments__intro { color: #5a4a6a; }
+  body.theme-light .experiment-card { border-color: rgba(120, 80, 160, 0.2); background: rgba(120, 80, 160, 0.04); }
 
   @media (max-width: 900px) {
-    .landing-content {
-      grid-template-columns: 1fr;
-      grid-template-rows: auto auto;
-      gap: 0;
-      align-items: stretch;
-      padding: clamp(1.25rem, 4vw, 2rem) clamp(1.5rem, 5vw, 2rem);
-      min-height: 100vh;
-      text-align: center;
+    .hero {
+      min-height: 80vh;
     }
 
-    .landing-col--left {
-      order: 2;
-      display: flex;
+    .hero__content {
+      min-height: 80vh;
+      padding: 1.5rem var(--content-padding);
+    }
+
+    .hero__top {
+      padding-top: 0.5rem;
+    }
+
+    .hero__name {
+      font-size: clamp(48px, 14vw, 72px);
+    }
+
+    .hero__tagline {
+      font-size: clamp(12px, 3.2vw, 16px);
+    }
+
+    .hero__context :global(.hero__rotating) {
+      font-size: clamp(0.8125rem, 3.5vw, 1rem);
+    }
+
+    .hero__bottom {
       flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      padding-top: clamp(1.5rem, 4vw, 2.5rem);
+      align-items: flex-start;
+      gap: 1.25rem;
     }
 
-    .landing-col--right {
-      order: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 0;
-      min-width: 0;
-      padding-top: 0;
-      overflow: hidden;
+    .hero__nav {
+      gap: 2rem;
     }
 
-    .landing__head {
-      align-items: center;
+    .hero__nav :global(.hero__nav-link) {
+      font-size: clamp(0.8125rem, 3.5vw, 1rem);
     }
 
-    .landing__name,
-    .landing__tagline {
-      font-size: clamp(32px, 8vw, 62px);
-      text-align: center;
+    .work {
+      padding: 4rem var(--content-padding) 4rem;
     }
 
-    .landing-globe {
-      width: 100%;
-      max-width: min(320px, 100%);
-      margin: 0 auto;
-      aspect-ratio: 1;
+    .work__header {
+      margin-bottom: 3rem;
+      padding-bottom: 1.5rem;
     }
 
-    .landing__coming {
-      margin-top: 2.5rem;
-      text-align: center;
+    .work__list {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .other-work {
+      padding: 4rem var(--content-padding) 4rem;
+    }
+
+    .other-work__list {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .experiments {
+      padding: 4rem var(--content-padding) 4rem;
+    }
+
+    .experiments__list {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .intro {
+      padding: 3rem var(--content-padding) 4rem;
+    }
+
+    .site-footer__inner {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 </style>

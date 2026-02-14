@@ -3,9 +3,9 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 
 // https://astro.build/config
-// A GitHub Pages la base ha de ser /nom-del-repo/ (en CI es defineix BASE_PATH)
+// En local: base '/' (obres http://localhost:4321). En CI: BASE_PATH = nom del repo.
 export default defineConfig({
-  base: process.env.BASE_PATH ? `/${process.env.BASE_PATH}/` : '/new-portfolio/',
+  base: process.env.BASE_PATH ? `/${process.env.BASE_PATH}/` : '/',
   integrations: [react()],
   server: {
     host: true,

@@ -1,0 +1,95 @@
+---
+interface Props {
+  text: string;
+  href?: string;
+  class?: string;
+  tag?: string;
+}
+const { text, href, class: className = "", tag = "span" } = Astro.props;
+const Tag = href ? "a" : tag;
+---
+<Tag
+  class:list={["text-scramble", className]}
+  data-text={text}
+  {...(href ? { href } : {})}
+>
+  {text}
+</Tag>
+
+<script>
+  const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&";
+
+  class Scrambler {
+    el: HTMLElement;
+    original: string;
+    isAnimating = false;
+
+    constructor(el: HTMLElement) {
+      this.el = el;
+      this.original = el.dataset.text || el.textContent || "";
+      el.addEventListener("mouseenter", () => this.scramble());
+    }
+
+    scramble() {
+      if (this.isAnimating) return;
+      this.isAnimating = true;
+      const target = this.original;
+      const len = target.length;
+      let iteration = 0;
+      const maxIterations = len + 8;
+
+      const interval = setInterval(() => {
+        let result = "";
+        for (let i = 0; i < len; i++) {
+          if (target[i] === " ") {
+            result += " ";
+          } else if (i < iteration - 3) {
+            result += target[i];
+          } else {
+            result += CHARS[Math.floor(Math.random() * CHARS.length)];
+          }
+        }
+        this.el.textContent = result;
+        iteration++;
+        if (iteration > maxIterations) {
+          clearInterval(interval);
+          this.el.textContent = target;
+          this.isAnimating = false;
+        }
+      }, 30);
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>(".text-scramble").forEach(
+    (el) => new Scrambler(el)
+  );
+</script>
+
+<style>
+  .text-scramble {
+    display: inline-block;
+    cursor: default;
+    transition: opacity var(--motion-duration) var(--motion-ease),
+      transform var(--motion-duration) var(--motion-ease);
+  }
+
+  a.text-scramble {
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  a.text-scramble:hover {
+    text-decoration: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    a.text-scramble:hover {
+      opacity: 0.9;
+    }
+  }
+
+  a.text-scramble:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 4px;
+  }
+</style>

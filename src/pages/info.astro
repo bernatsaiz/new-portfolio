@@ -1,0 +1,393 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+<BaseLayout title="Info — Bernat Saiz" description="Information designer and data journalist." variant="interior">
+  <header class="interior-header">
+    <a href="/" aria-label="Tornar a la pàgina d'inici"><span class="back-arrow" aria-hidden="true">&larr;</span> Landing</a>
+    <span class="header__label">INFO</span>
+  </header>
+
+  <article class="info-container">
+    <!-- Bio -->
+    <section class="info__bio">
+      <h1>BERNAT SAIZ</h1>
+      <p class="info__bio-text">
+        Information designer and data journalist specialized in visual storytelling for editorial, civic, and public-interest contexts. Focused on transforming complex information into clear, honest, and structured visual systems.
+      </p>
+    </section>
+
+    <hr class="separator" />
+
+    <!-- Expertise -->
+    <section class="info__section">
+      <h2>Expertise</h2>
+      <p class="info__expertise">
+        Editorial data visualization · Information design · Narrative structures · Data-driven reporting · AI-assisted workflows · Visual systems for social platforms · Brand identity for public-interest projects
+      </p>
+    </section>
+
+    <hr class="separator" />
+
+    <!-- Experience -->
+    <section class="info__section">
+      <h2>Experience</h2>
+      <div class="info__experience" id="experience-list">
+        <div class="exp__item">
+          <span class="exp__date">2026 –</span>
+          <div class="exp__detail">
+            <span class="exp__company">Domestic Data Streamers</span>
+            <span class="exp__role">Communications Lead</span>
+          </div>
+        </div>
+        <div class="exp__item">
+          <span class="exp__date">2020 – 2024</span>
+          <div class="exp__detail">
+            <span class="exp__company">Verificat</span>
+            <span class="exp__role">Visual Design & Data Visualization Lead</span>
+          </div>
+        </div>
+        <div class="exp__item">
+          <span class="exp__date">2024</span>
+          <div class="exp__detail">
+            <span class="exp__company">Storydata / Forbes Spain</span>
+            <span class="exp__role">Data Journalist</span>
+          </div>
+        </div>
+
+        <!-- Collapsible items -->
+        <div class="exp__collapsible" id="exp-collapsible">
+          <div class="exp__item">
+            <span class="exp__date">2024</span>
+            <div class="exp__detail">
+              <span class="exp__company">Cadena SER Catalunya</span>
+              <span class="exp__role">Data Journalist</span>
+            </div>
+          </div>
+          <div class="exp__item">
+            <span class="exp__date">2023</span>
+            <div class="exp__detail">
+              <span class="exp__company">TEDxUPF</span>
+              <span class="exp__role">Speaker</span>
+            </div>
+          </div>
+          <div class="exp__item">
+            <span class="exp__date">2022</span>
+            <div class="exp__detail">
+              <span class="exp__company">Diari de Barcelona</span>
+              <span class="exp__role">Information Design (thesis project)</span>
+            </div>
+          </div>
+          <div class="exp__item">
+            <span class="exp__date">2021</span>
+            <div class="exp__detail">
+              <span class="exp__company">Verificat — Desfake</span>
+              <span class="exp__role">Brand & Visual System Designer</span>
+            </div>
+          </div>
+          <div class="exp__item">
+            <span class="exp__date">2020</span>
+            <div class="exp__detail">
+              <span class="exp__company">ACN — Agència Catalana de Notícies</span>
+              <span class="exp__role">Multimedia Journalist (internship)</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="exp__toggle" id="exp-toggle" type="button" aria-expanded="false" aria-controls="exp-collapsible">
+          Show all experience
+        </button>
+      </div>
+    </section>
+
+    <hr class="separator" />
+
+    <!-- Education -->
+    <section class="info__section">
+      <h2>Education</h2>
+      <div class="info__education">
+        <div class="exp__item">
+          <span class="exp__date">2021 – 2025</span>
+          <div class="exp__detail">
+            <span class="exp__company">Universitat Pompeu Fabra</span>
+            <span class="exp__role">Journalism & Political Science</span>
+          </div>
+        </div>
+        <div class="exp__item">
+          <span class="exp__date">2016 – 2020</span>
+          <div class="exp__detail">
+            <span class="exp__company">Universitat Pompeu Fabra</span>
+            <span class="exp__role">Advertising & Public Relations</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="separator" />
+
+    <!-- Contact -->
+    <section class="info__section">
+      <h2>Contact</h2>
+      <div class="info__contact">
+        <a href="mailto:bernatsaiz@gmail.com" class="info__contact-link">bernatsaiz@gmail.com</a>
+        <div class="info__contact-row">
+          <a href="https://www.linkedin.com/in/bernatsaiz/" target="_blank" rel="noopener noreferrer" class="info__contact-link" aria-label="LinkedIn (obre en finestra nova)">LinkedIn</a>
+          <span class="info__contact-sep">·</span>
+          <span class="info__contact-text">Barcelona</span>
+        </div>
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<script>
+  const toggle = document.getElementById("exp-toggle");
+  const collapsible = document.getElementById("exp-collapsible");
+
+  if (toggle && collapsible) {
+    let expanded = false;
+    toggle.addEventListener("click", () => {
+      expanded = !expanded;
+      collapsible.classList.toggle("exp__collapsible--open", expanded);
+      toggle.setAttribute("aria-expanded", String(expanded));
+      toggle.textContent = expanded ? "Show less" : "Show all experience";
+    });
+  }
+</script>
+
+<style>
+  .interior-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem var(--content-padding);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+
+  .interior-header a {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #666;
+    text-decoration: none;
+    transition: color var(--motion-duration) var(--motion-ease);
+  }
+
+  .interior-header a:hover {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .header__label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #444;
+  }
+
+  .info-container {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 4rem var(--content-padding) 8rem;
+  }
+
+  .separator {
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin: 3.5rem 0;
+  }
+
+  /* Bio */
+  .info__bio h1 {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.5rem;
+    color: #fff;
+  }
+
+  .info__bio-text {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    color: #bbb;
+    margin: 0;
+  }
+
+  /* Sections */
+  .info__section h2 {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #555;
+    margin: 0 0 1.5rem;
+  }
+
+  .info__expertise {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: #999;
+    margin: 0;
+  }
+
+  /* Experience items */
+  .info__experience,
+  .info__education {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .exp__item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 1.5rem;
+    padding: 1rem 0.75rem;
+    margin: 0 -0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 4px;
+    transition: background-color var(--motion-duration) var(--motion-ease);
+  }
+
+  .exp__item:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+
+  .exp__item:last-child {
+    border-bottom: 0;
+  }
+
+  .exp__date {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #555;
+    letter-spacing: 0.04em;
+    padding-top: 0.1em;
+  }
+
+  .exp__detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .exp__company {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #ccc;
+  }
+
+  .exp__role {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8125rem;
+    color: #777;
+  }
+
+  /* Collapsible */
+  .exp__collapsible {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  .exp__collapsible--open {
+    max-height: 600px;
+  }
+
+  .exp__toggle {
+    appearance: none;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #666;
+    padding: 0.5rem 1rem;
+    margin-top: 1.5rem;
+    cursor: pointer;
+    transition: color var(--motion-duration) var(--motion-ease),
+      border-color var(--motion-duration) var(--motion-ease),
+      transform var(--motion-duration) var(--motion-ease);
+  }
+
+  .exp__toggle:hover {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .exp__toggle:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Contact */
+  .info__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .info__contact-link {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.875rem;
+    color: #ccc;
+    text-decoration: none;
+    transition: color var(--motion-duration) var(--motion-ease);
+  }
+
+  .info__contact-link:hover {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .info__contact-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .info__contact-sep {
+    color: #444;
+  }
+
+  .info__contact-text {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.875rem;
+    color: #666;
+  }
+
+  @media (max-width: 640px) {
+    .interior-header {
+      padding: 1.25rem var(--content-padding);
+    }
+
+    .info-container {
+      padding: 2rem var(--content-padding) 4rem;
+    }
+
+    .exp__item {
+      grid-template-columns: 90px 1fr;
+      gap: 1rem;
+    }
+
+    .exp__date {
+      font-size: 0.6875rem;
+    }
+  }
+</style>

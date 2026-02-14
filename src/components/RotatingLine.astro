@@ -1,0 +1,81 @@
+---
+interface Props {
+  lines: string[];
+  interval?: number;
+  class?: string;
+}
+const { lines, interval = 5000, class: className = "" } = Astro.props;
+---
+<span
+  class:list={["rotating-line", className]}
+  data-lines={JSON.stringify(lines)}
+  data-interval={interval}
+  aria-live="polite"
+>
+  {lines[0]}
+</span>
+
+<script>
+  function prefersReducedMotion(): boolean {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  class RotatingText {
+    el: HTMLElement;
+    lines: string[];
+    interval: number;
+    currentIndex = 0;
+    isAnimating = false;
+
+    constructor(el: HTMLElement) {
+      this.el = el;
+      this.lines = JSON.parse(el.dataset.lines || "[]");
+      this.interval = parseInt(el.dataset.interval || "5000", 10);
+      if (this.lines.length > 1 && !prefersReducedMotion()) {
+        setInterval(() => this.next(), this.interval);
+      }
+    }
+
+    next() {
+      if (this.isAnimating) return;
+      this.isAnimating = true;
+      this.currentIndex = (this.currentIndex + 1) % this.lines.length;
+      const target = this.lines[this.currentIndex];
+      const current = this.el.textContent || "";
+      const maxLen = Math.max(current.length, target.length);
+      let step = 0;
+
+      const tick = setInterval(() => {
+        let result = "";
+        for (let i = 0; i < maxLen; i++) {
+          if (i < step - 2) {
+            result += target[i] || "";
+          } else if (i < step + 3) {
+            result += String.fromCharCode(33 + Math.floor(Math.random() * 90));
+          } else {
+            result += current[i] || " ";
+          }
+        }
+        this.el.textContent = result;
+        step++;
+        if (step > maxLen + 4) {
+          clearInterval(tick);
+          this.el.textContent = target;
+          this.isAnimating = false;
+        }
+      }, 25);
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>(".rotating-line").forEach(
+    (el) => new RotatingText(el)
+  );
+</script>
+
+<style>
+  .rotating-line {
+    display: inline-block;
+    min-width: 20ch;
+    transition: opacity 0.15s ease;
+  }
+</style>
