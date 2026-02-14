@@ -13,7 +13,7 @@ const next = currentIndex < total - 1 ? projects[currentIndex + 1] : null;
 ---
 <nav class="project-nav" aria-label="Project navigation">
   {prev ? (
-    <a href={`/work/${prev.slug}`} class="project-nav__link project-nav__link--prev" aria-label={`Projecte anterior: ${prev.title}`}>
+    <a href={`${import.meta.env.BASE_URL}work/${prev.slug}`} class="project-nav__link project-nav__link--prev" aria-label={`Projecte anterior: ${prev.title}`}>
       <span class="project-nav__arrow" aria-hidden="true">&larr;</span>
       <span class="project-nav__meta">
         <span class="project-nav__label">{String(currentIndex).padStart(2, "0")}/{String(total).padStart(2, "0")}</span>
@@ -22,7 +22,7 @@ const next = currentIndex < total - 1 ? projects[currentIndex + 1] : null;
     </a>
   ) : <span />}
   {next ? (
-    <a href={`/work/${next.slug}`} class="project-nav__link project-nav__link--next" aria-label={`Projecte següent: ${next.title}`}>
+    <a href={`${import.meta.env.BASE_URL}work/${next.slug}`} class="project-nav__link project-nav__link--next" aria-label={`Projecte següent: ${next.title}`}>
       <span class="project-nav__meta">
         <span class="project-nav__label">{String(currentIndex + 2).padStart(2, "0")}/{String(total).padStart(2, "0")}</span>
         <span class="project-nav__title">{next.title}</span>

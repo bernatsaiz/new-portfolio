@@ -52,9 +52,9 @@ import "../styles/global.css";
           />
         </div>
         <nav class="hero__nav" aria-label="Navegació principal">
-          <TextScramble text="01 WORK" href="#work" class="hero__nav-link" />
-          <TextScramble text="02 EXPERIMENTS" href="#experiments" class="hero__nav-link" />
-          <TextScramble text="03 INFO" href="#info" class="hero__nav-link" />
+          <TextScramble text="01 WORK" href={`${import.meta.env.BASE_URL}#work`} class="hero__nav-link" />
+          <TextScramble text="02 EXPERIMENTS" href={`${import.meta.env.BASE_URL}#experiments`} class="hero__nav-link" />
+          <TextScramble text="03 INFO" href={`${import.meta.env.BASE_URL}#info`} class="hero__nav-link" />
         </nav>
       </div>
     </div>
@@ -67,7 +67,7 @@ import "../styles/global.css";
         for editorial, civic, and public-interest contexts. Focused on transforming
         complex information into clear, honest, and structured visual systems.
       </p>
-      <a href="/info" class="intro__link"><TextScramble text="Full profile " tag="span" /> <span class="link-arrow" aria-hidden="true">&rarr;</span></a>
+      <a href={`${import.meta.env.BASE_URL}info`} class="intro__link"><TextScramble text="Full profile " tag="span" /> <span class="link-arrow" aria-hidden="true">&rarr;</span></a>
     </div>
   </section>
 
@@ -80,9 +80,9 @@ import "../styles/global.css";
       <div class="work__list">
       {projects.map((project, i) => (
         <article class="project-card" style={`--stagger: ${i}`}>
-          <a href={`/work/${project.slug}`} class="project-card__image-link">
+          <a href={`${import.meta.env.BASE_URL}work/${project.slug}`} class="project-card__image-link">
             <img
-              src={project.images[0]}
+              src={`${import.meta.env.BASE_URL}${project.images[0].replace(/^\//, "")}`}
               alt={project.title}
               width="1200"
               height="675"
@@ -93,7 +93,7 @@ import "../styles/global.css";
           <div class="project-card__body">
             <span class="project-card__num">{String(i + 1).padStart(2, "0")}</span>
             <h3 class="project-card__title">
-              <a href={`/work/${project.slug}`}>{project.title}</a>
+              <a href={`${import.meta.env.BASE_URL}work/${project.slug}`}>{project.title}</a>
             </h3>
             <p class="project-card__subtitle">{project.subtitle}</p>
             <div class="project-card__meta">
@@ -105,7 +105,7 @@ import "../styles/global.css";
                 </>
               )}
             </div>
-            <a href={`/work/${project.slug}`} class="project-card__link">
+            <a href={`${import.meta.env.BASE_URL}work/${project.slug}`} class="project-card__link">
               <TextScramble text="View project " tag="span" /> <span class="link-arrow" aria-hidden="true">&rarr;</span>
             </a>
           </div>
@@ -206,7 +206,7 @@ import "../styles/global.css";
         <span class="site-footer__sep">&middot;</span>
         <span>Barcelona</span>
       </p>
-      <a href="/info" class="site-footer__profile"><TextScramble text="Full profile " tag="span" /> <span class="link-arrow" aria-hidden="true">&rarr;</span></a>
+      <a href={`${import.meta.env.BASE_URL}info`} class="site-footer__profile"><TextScramble text="Full profile " tag="span" /> <span class="link-arrow" aria-hidden="true">&rarr;</span></a>
     </div>
   </footer>
 

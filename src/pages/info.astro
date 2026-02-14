@@ -3,7 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 <BaseLayout title="Info — Bernat Saiz" description="Information designer and data journalist." variant="interior">
   <header class="interior-header">
-    <a href="/" aria-label="Tornar a la pàgina d'inici"><span class="back-arrow" aria-hidden="true">&larr;</span> Landing</a>
+    <a href={import.meta.env.BASE_URL || "/"} aria-label="Tornar a la pàgina d'inici"><span class="back-arrow" aria-hidden="true">&larr;</span> Landing</a>
     <span class="header__label">INFO</span>
   </header>
 
