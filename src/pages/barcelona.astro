@@ -1,0 +1,386 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+<BaseLayout title="Barcelona Live — Bernat Saiz" description="Live time, weather and air quality in Barcelona" variant="interior">
+<main class="bcn-page">
+  <a href={import.meta.env.BASE_URL || "/"} class="bcn-page__back" aria-label="Tornar a l'inici">← Back</a>
+
+  <header class="bcn-page__header">
+    <span class="bcn-page__live-dot" aria-hidden="true"></span>
+    <h1 class="bcn-page__title">Barcelona</h1>
+    <p class="bcn-page__subtitle">Local time, weather & air quality</p>
+  </header>
+
+  <div class="bcn-page__grid">
+    <section class="bcn-card bcn-card--time" aria-labelledby="bcn-time-label">
+      <span id="bcn-time-label" class="bcn-card__label">Local time</span>
+      <p class="bcn-card__value bcn-card__value--time" data-bcn-time aria-live="polite">--:--:--</p>
+      <p class="bcn-card__meta">Europe/Madrid</p>
+    </section>
+
+    <section class="bcn-card bcn-card--weather" aria-labelledby="bcn-weather-label">
+      <span id="bcn-weather-label" class="bcn-card__label">Weather</span>
+      <div class="bcn-card__weather">
+        <span class="bcn-card__weather-icon" data-bcn-weather-icon aria-hidden="true">·</span>
+        <span class="bcn-card__value bcn-card__value--temp" data-bcn-temp>—°C</span>
+      </div>
+      <p class="bcn-card__value bcn-card__value--condition" data-bcn-weather>Loading…</p>
+    </section>
+
+    <section class="bcn-card bcn-card--air" aria-labelledby="bcn-air-label">
+      <span id="bcn-air-label" class="bcn-card__label">Air quality</span>
+      <div class="bcn-card__air-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="50" aria-label="PM2.5 level">
+        <span class="bcn-card__air-fill" data-bcn-air-fill></span>
+      </div>
+      <p class="bcn-card__value bcn-card__value--air" data-bcn-air data-bcn-air-tone="na">—</p>
+      <p class="bcn-card__meta">PM2.5 µg/m³ · Transparència Catalunya</p>
+    </section>
+  </div>
+
+  <p class="bcn-page__updated" data-bcn-updated aria-live="polite">Updating…</p>
+</main>
+</BaseLayout>
+
+<script>
+  type AirTone = "good" | "medium" | "bad" | "na";
+
+  const WEATHER_URL = "https://api.open-meteo.com/v1/forecast?latitude=41.38&longitude=2.17&current=temperature_2m,weather_code&timezone=Europe%2FMadrid";
+  const AIR_URL = "https://analisi.transparenciacatalunya.cat/resource/tasf-thgu.json?municipi=Barcelona&$limit=100";
+  const CLOCK_TZ = "Europe/Madrid";
+  const WEATHER_REFRESH_MS = 10 * 60 * 1000;
+  const AIR_REFRESH_MS = 15 * 60 * 1000;
+
+  function fetchWithTimeout(url, timeout = 7000) {
+    const controller = new AbortController();
+    const t = window.setTimeout(() => controller.abort(), timeout);
+    return fetch(url, { signal: controller.signal })
+      .then((res) => { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+      .finally(() => window.clearTimeout(t));
+  }
+
+  function weatherFromCode(code) {
+    if (code === 0) return { icon: "☀", label: "Clear" };
+    if (code === 1 || code === 2) return { icon: "⛅", label: "Partly cloudy" };
+    if (code === 3) return { icon: "☁", label: "Cloudy" };
+    if (code === 45 || code === 48) return { icon: "〰", label: "Fog" };
+    if ([51, 53, 55, 56, 57].includes(code)) return { icon: "☂", label: "Drizzle" };
+    if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return { icon: "☔", label: "Rain" };
+    if ([71, 73, 75, 77, 85, 86].includes(code)) return { icon: "❄", label: "Snow" };
+    if ([95, 96, 99].includes(code)) return { icon: "⚡", label: "Thunderstorm" };
+    return { icon: "•", label: "—" };
+  }
+
+  function toneFromPm25(µg) {
+    if (µg <= 10) return "good";
+    if (µg <= 25) return "medium";
+    return "bad";
+  }
+
+  function labelFromTone(tone) {
+    if (tone === "good") return "Good";
+    if (tone === "medium") return "Moderate";
+    if (tone === "bad") return "Poor";
+    return "—";
+  }
+
+  const timeEl = document.querySelector("[data-bcn-time]");
+  const weatherIconEl = document.querySelector("[data-bcn-weather-icon]");
+  const tempEl = document.querySelector("[data-bcn-temp]");
+  const weatherEl = document.querySelector("[data-bcn-weather]");
+  const airFillEl = document.querySelector("[data-bcn-air-fill]");
+  const airEl = document.querySelector("[data-bcn-air]");
+  const airBarEl = document.querySelector(".bcn-card__air-bar");
+  const updatedEl = document.querySelector("[data-bcn-updated]");
+
+  const timeFmt = new Intl.DateTimeFormat("en-GB", { timeZone: CLOCK_TZ, hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  const dateFmt = new Intl.DateTimeFormat("en-GB", { timeZone: CLOCK_TZ, weekday: "short", day: "numeric", month: "short" });
+
+  function setUpdated() {
+    if (updatedEl) updatedEl.textContent = "Updated " + dateFmt.format(new Date()) + " · " + timeFmt.format(new Date());
+  }
+
+  function updateClock() {
+    if (timeEl) timeEl.textContent = timeFmt.format(new Date());
+    setUpdated();
+  }
+
+  async function refreshWeather() {
+    try {
+      const json = await fetchWithTimeout(WEATHER_URL);
+      const current = json?.current;
+      if (!current) throw new Error("Missing weather");
+      const temperature = Number(current.temperature_2m);
+      const code = Number(current.weather_code);
+      const { icon, label } = weatherFromCode(Number.isFinite(code) ? code : -1);
+      const tempText = Number.isFinite(temperature) ? Math.round(temperature) + "°C" : "—°C";
+      if (weatherIconEl) weatherIconEl.textContent = icon;
+      if (tempEl) tempEl.textContent = tempText;
+      if (weatherEl) weatherEl.textContent = label;
+    } catch (e) {
+      if (weatherIconEl) weatherIconEl.textContent = "•";
+      if (tempEl) tempEl.textContent = "—°C";
+      if (weatherEl) weatherEl.textContent = "Unavailable";
+    }
+  }
+
+  async function refreshAir() {
+    try {
+      const rows = await fetchWithTimeout(AIR_URL);
+      if (!Array.isArray(rows) || rows.length === 0) throw new Error("No data");
+      const now = new Date();
+      let hour1Based = now.getHours() + 1;
+      if (hour1Based > 24) hour1Based = 24;
+      const pm25Rows = rows.filter((r) => r.municipi === "Barcelona" && String(r.magnitud) === "9" && (r.tipus_estacio === "background" || r.tipus_estacio === "urban"));
+      const record = pm25Rows[0];
+      if (!record) throw new Error("No PM2.5");
+      let µg = null;
+      for (let h = hour1Based; h >= 1 && µg === null; h--) {
+        const k = "h" + String(h).padStart(2, "0");
+        const v = record[k];
+        if (v !== undefined && v !== null && String(v).trim() !== "") {
+          const n = Number(v);
+          if (Number.isFinite(n)) µg = n;
+        }
+      }
+      if (µg === null) throw new Error("No value");
+      const tone = toneFromPm25(µg);
+      const pct = Math.min(100, (µg / 50) * 100);
+      if (airFillEl) {
+        airFillEl.style.width = pct + "%";
+        airFillEl.setAttribute("data-tone", tone);
+      }
+      if (airEl) {
+        airEl.textContent = labelFromTone(tone) + " (" + Math.round(µg) + ")";
+        airEl.setAttribute("data-bcn-air-tone", tone);
+      }
+      if (airBarEl) {
+        airBarEl.setAttribute("aria-valuenow", Math.round(µg));
+      }
+      setUpdated();
+    } catch (e) {
+      if (airFillEl) airFillEl.style.width = "0%";
+      if (airEl) {
+        airEl.textContent = "—";
+        airEl.setAttribute("data-bcn-air-tone", "na");
+      }
+    }
+  }
+
+  updateClock();
+  refreshWeather();
+  refreshAir();
+  setInterval(updateClock, 1000);
+  setInterval(refreshWeather, WEATHER_REFRESH_MS);
+  setInterval(refreshAir, AIR_REFRESH_MS);
+</script>
+
+<style>
+  .bcn-page {
+    min-height: 100vh;
+    background: #0c0c1a;
+    color: #eaeaea;
+    font-family: "JetBrains Mono", monospace;
+    padding: clamp(2rem, 6vw, 4rem) var(--content-padding);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bcn-page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(25, 24, 83, 0.6), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 50%, rgba(100, 80, 180, 0.12), transparent),
+      radial-gradient(ellipse 50% 30% at 0% 80%, rgba(80, 120, 200, 0.08), transparent);
+    pointer-events: none;
+  }
+
+  .bcn-page__back {
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+    font-size: 0.875rem;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    margin-bottom: clamp(2rem, 8vw, 4rem);
+    transition: color 0.25s ease;
+  }
+
+  .bcn-page__back:hover {
+    color: rgba(255, 255, 255, 0.95);
+    text-decoration: none;
+  }
+
+  .bcn-page__header {
+    position: relative;
+    z-index: 2;
+    margin-bottom: clamp(2.5rem, 10vw, 5rem);
+  }
+
+  .bcn-page__live-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: #8cefb4;
+    box-shadow: 0 0 0 0 rgba(140, 239, 180, 0.5);
+    animation: bcnPulse 2.2s ease-out infinite;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bcn-page__live-dot {
+      animation: none;
+    }
+  }
+
+  @keyframes bcnPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(140, 239, 180, 0.5); }
+    60% { box-shadow: 0 0 0 0.4rem rgba(140, 239, 180, 0); }
+  }
+
+  .bcn-page__title {
+    font-family: "Bai Jamjuree", sans-serif;
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.35rem 0;
+    color: #fff;
+  }
+
+  .bcn-page__subtitle {
+    font-size: clamp(0.8125rem, 1.2vw, 0.9375rem);
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .bcn-page__grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: clamp(1.25rem, 4vw, 2rem);
+    max-width: 900px;
+  }
+
+  .bcn-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem 1.75rem;
+    transition: border-color 0.35s ease, background 0.35s ease, transform 0.35s var(--motion-ease-out);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bcn-card:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-2px);
+    }
+  }
+
+  .bcn-card__label {
+    display: block;
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.45);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  .bcn-card__value {
+    margin: 0;
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.2;
+  }
+
+  .bcn-card__value--time {
+    font-family: "Bai Jamjuree", sans-serif;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bcn-card__weather {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .bcn-card__weather-icon {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .bcn-card__value--temp {
+    font-family: "Bai Jamjuree", sans-serif;
+  }
+
+  .bcn-card__value--condition {
+    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .bcn-card__air-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+  }
+
+  .bcn-card__air-fill {
+    display: block;
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .bcn-card__air-fill[data-tone="good"] {
+    background: linear-gradient(90deg, #5dd39e, #8cefb4);
+  }
+
+  .bcn-card__air-fill[data-tone="medium"] {
+    background: linear-gradient(90deg, #e8b84a, #ffd882);
+  }
+
+  .bcn-card__air-fill[data-tone="bad"] {
+    background: linear-gradient(90deg, #e07a7a, #ffb2b2);
+  }
+
+  .bcn-card__value--air[data-bcn-air-tone="good"] {
+    color: #8cefb4;
+  }
+
+  .bcn-card__value--air[data-bcn-air-tone="medium"] {
+    color: #ffd882;
+  }
+
+  .bcn-card__value--air[data-bcn-air-tone="bad"] {
+    color: #ffb2b2;
+  }
+
+  .bcn-card__meta {
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 0.5rem 0 0 0;
+  }
+
+  .bcn-page__updated {
+    position: relative;
+    z-index: 2;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.35);
+    margin: clamp(2rem, 6vw, 3rem) 0 0 0;
+  }
+</style>

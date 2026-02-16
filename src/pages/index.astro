@@ -2,11 +2,12 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { FaultyTerminalBackground } from "../components/FaultyTerminalBackground";
 import TextScramble from "../components/TextScramble.astro";
-import RotatingLine from "../components/RotatingLine.astro";
+import BarcelonaLiveIndicator from "../components/BarcelonaLiveIndicator.astro";
 import { projects } from "../data/projects";
 import { otherWork } from "../data/otherWork";
 import { experiments } from "../data/experiments";
 import "../styles/global.css";
+import "../styles/home.css";
 
 ---
 <BaseLayout title="Bernat Saiz — Data Visualization & Information Design" description="Data Visualization & Information Design." variant="landing">
@@ -35,26 +36,22 @@ import "../styles/global.css";
     />
     <div class="hero__content">
       <div class="hero__top">
-        <h1 class="hero__name"><TextScramble text="Bernat Saiz" /></h1>
-        <p class="hero__tagline"><TextScramble text="Information Design & Data Visualization" /></p>
-      </div>
-
-      <div class="hero__bottom">
-        <div class="hero__context">
-          <RotatingLine
-            lines={[
-              "Currently at Domestic Data Streamers",
-              "Previously leading design at Verificat",
-              "BCN / CAT / ES",
-            ]}
-            interval={4000}
-            class="hero__rotating"
-          />
+        <div class="hero__top-head">
+          <h1 class="hero__name">Bernat Saiz</h1>
+          <p class="hero__tagline">Information design and data visualization</p>
+          <div class="hero__context">
+            <span class="hero__context-line">Currently @ Domestic Data Streamers</span>
+          </div>
         </div>
+        <a href={`${import.meta.env.BASE_URL}barcelona`} class="hero__live-wrap" aria-label="Barcelona live: hora, temps i qualitat de l'aire">
+          <BarcelonaLiveIndicator class="hero__live-indicator" />
+        </a>
+      </div>
+      <div class="hero__bottom">
         <nav class="hero__nav" aria-label="Navegació principal">
-          <TextScramble text="01 WORK" href={`${import.meta.env.BASE_URL}#work`} class="hero__nav-link" />
-          <TextScramble text="02 EXPERIMENTS" href={`${import.meta.env.BASE_URL}#experiments`} class="hero__nav-link" />
-          <TextScramble text="03 INFO" href={`${import.meta.env.BASE_URL}#info`} class="hero__nav-link" />
+          <TextScramble text="1 WORK" href={`${import.meta.env.BASE_URL}#work`} class="hero__nav-link" />
+          <TextScramble text="2 EXPERIMENTS" href={`${import.meta.env.BASE_URL}#experiments`} class="hero__nav-link" />
+          <TextScramble text="3 INFO" href={`${import.meta.env.BASE_URL}#info`} class="hero__nav-link" />
         </nav>
       </div>
     </div>
@@ -80,6 +77,7 @@ import "../styles/global.css";
       <div class="work__list">
       {projects.map((project, i) => (
         <article class="project-card" style={`--stagger: ${i}`}>
+          <a href={`${import.meta.env.BASE_URL}work/${project.slug}`} class="project-card__entire-link" aria-hidden="true" tabindex="-1"></a>
           <a href={`${import.meta.env.BASE_URL}work/${project.slug}`} class="project-card__image-link">
             <img
               src={`${import.meta.env.BASE_URL}${project.images[0].replace(/^\//, "")}`}
@@ -123,34 +121,37 @@ import "../styles/global.css";
       </header>
       <div class="other-work__list">
         {otherWork.map((item, i) => (
-          <article class="other-work-card" style={`--stagger: ${i}`}>
+          <article class="project-card other-work-card" style={`--stagger: ${i}`}>
+            <a href={item.url} target="_blank" rel="noopener noreferrer" class="project-card__entire-link" aria-hidden="true" tabindex="-1"></a>
             {item.image ? (
-              <a href={item.url} target="_blank" rel="noopener noreferrer" class="other-work-card__image-link">
+              <a href={item.url} target="_blank" rel="noopener noreferrer" class="project-card__image-link">
                 <img
-                  src={item.image}
+                  src={item.image.startsWith("http") ? item.image : `${import.meta.env.BASE_URL}${item.image.replace(/^\//, "")}`}
                   alt={item.title}
                   width="800"
                   height="450"
                   loading="lazy"
-                  class="other-work-card__img"
+                  class="project-card__img"
                 />
               </a>
             ) : (
-              <a href={item.url} target="_blank" rel="noopener noreferrer" class="other-work-card__placeholder">
-                <span class="other-work-card__kind">{item.kind}</span>
+              <a href={item.url} target="_blank" rel="noopener noreferrer" class="project-card__image-link">
+                <span class="project-card__subtitle">{item.kind}</span>
               </a>
             )}
-            <div class="other-work-card__body">
-              <span class="other-work-card__kind-label">{item.kind}</span>
-              <h3 class="other-work-card__title">
+            <div class="project-card__body">
+              <span class="project-card__num">{String(i + 1).padStart(2, "0")}</span>
+              <h3 class="project-card__title">
                 <a href={item.url} target="_blank" rel="noopener noreferrer">{item.title}</a>
               </h3>
-              <p class="other-work-card__subtitle">{item.subtitle}</p>
-              {item.year && (
-                <span class="other-work-card__meta">{item.year}</span>
-              )}
-              <a href={item.url} target="_blank" rel="noopener noreferrer" class="other-work-card__link">
-                {item.ctaText} <span class="link-arrow" aria-hidden="true">&rarr;</span>
+              <p class="project-card__subtitle">{item.subtitle}</p>
+              <div class="project-card__meta">
+                {item.year && <span>{item.year}</span>}
+                <span class="project-card__dot">&middot;</span>
+                <span>{item.kind}</span>
+              </div>
+              <a href={item.url} target="_blank" rel="noopener noreferrer" class="project-card__link">
+                <TextScramble text={`${item.ctaText} `} tag="span" /> <span class="link-arrow" aria-hidden="true">&rarr;</span>
               </a>
             </div>
           </article>
@@ -167,28 +168,31 @@ import "../styles/global.css";
       </header>
       <div class="experiments__list">
         {experiments.map((exp, i) => (
-          <article class="experiment-card" style={`--stagger: ${i}`}>
-            <a href={exp.url} target="_blank" rel="noopener noreferrer" class="experiment-card__image-link">
+          <article class="project-card experiment-card" style={`--stagger: ${i}`}>
+            <a href={exp.url} target="_blank" rel="noopener noreferrer" class="project-card__entire-link" aria-hidden="true" tabindex="-1"></a>
+            <a href={exp.url} target="_blank" rel="noopener noreferrer" class="project-card__image-link">
               <img
                 src={exp.image}
                 alt={exp.title}
                 width="800"
                 height="450"
                 loading="lazy"
-                class="experiment-card__img"
+                class="project-card__img"
               />
             </a>
-            <div class="experiment-card__body">
-              <span class="experiment-card__badge">Vibe coding</span>
-              <h3 class="experiment-card__title">
+            <div class="project-card__body">
+              <span class="project-card__num">{String(i + 1).padStart(2, "0")}</span>
+              <h3 class="project-card__title">
                 <a href={exp.url} target="_blank" rel="noopener noreferrer">{exp.title}</a>
               </h3>
-              <p class="experiment-card__desc">{exp.shortDescription}</p>
-              {exp.year && (
-                <span class="experiment-card__meta">{exp.year}</span>
-              )}
-              <a href={exp.url} target="_blank" rel="noopener noreferrer" class="experiment-card__link">
-                View demo <span class="link-arrow" aria-hidden="true">&rarr;</span>
+              <p class="project-card__subtitle">{exp.shortDescription}</p>
+              <div class="project-card__meta">
+                {exp.year && <span>{exp.year}</span>}
+                <span class="project-card__dot">&middot;</span>
+                <span>{exp.tags?.[0] || "Experiment"}</span>
+              </div>
+              <a href={exp.url} target="_blank" rel="noopener noreferrer" class="project-card__link">
+                <TextScramble text="View demo " tag="span" /> <span class="link-arrow" aria-hidden="true">&rarr;</span>
               </a>
             </div>
           </article>
@@ -200,11 +204,9 @@ import "../styles/global.css";
   <footer class="site-footer" id="contact">
     <div class="site-footer__inner">
       <p class="site-footer__contact">
-        <a href="mailto:bernatsaiz@gmail.com">bernatsaiz@gmail.com</a>
+        <button type="button" class="site-footer__email-trigger" data-email="bernatsaiz@gmail.com" aria-label="Email, click to copy">Email</button>
         <span class="site-footer__sep">&middot;</span>
         <a href="https://www.linkedin.com/in/bernatsaiz/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn (opens in new window)">LinkedIn</a>
-        <span class="site-footer__sep">&middot;</span>
-        <span>Barcelona</span>
       </p>
       <a href={`${import.meta.env.BASE_URL}info`} class="site-footer__profile"><TextScramble text="Full profile " tag="span" /> <span class="link-arrow" aria-hidden="true">&rarr;</span></a>
     </div>
@@ -227,967 +229,135 @@ import "../styles/global.css";
     );
     sections.forEach((el) => observer.observe(el));
   }
+  function initEmailCopy() {
+    const btn = document.querySelector<HTMLButtonElement>(".site-footer__email-trigger");
+    if (!btn) return;
+    btn.addEventListener("click", () => {
+      const email = btn.getAttribute("data-email");
+      if (!email) return;
+      navigator.clipboard.writeText(email).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = "Copied!";
+        setTimeout(() => { btn.textContent = orig; }, 1500);
+      });
+    });
+  }
+  function initProjectCardLinkScramble() {
+    const cards = document.querySelectorAll<HTMLElement>(".project-card");
+    cards.forEach((card) => {
+      const scrambleEl = card.querySelector<HTMLElement>(".project-card__link .text-scramble");
+      if (!scrambleEl) return;
+      const trigger = () => {
+        scrambleEl.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+      };
+      card.addEventListener("mouseenter", trigger);
+      card.addEventListener("focusin", trigger);
+    });
+  }
+
+  const DRAG_THRESHOLD = 10;
+
+  function initDraggableCards() {
+    const cards = document.querySelectorAll<HTMLElement>(".project-card");
+    cards.forEach((card) => {
+      let startX = 0;
+      let startY = 0;
+      let clone: HTMLElement | null = null;
+      let didDrag = false;
+      let moveHandler: ((e: MouseEvent | TouchEvent) => void) | null = null;
+      let upHandler: (() => void) | null = null;
+
+      function getCoords(e: MouseEvent | TouchEvent): { x: number; y: number } {
+        if ("touches" in e) {
+          const t = e.type.includes("end") || e.type.includes("cancel") ? (e as TouchEvent).changedTouches[0] : (e as TouchEvent).touches[0];
+          return { x: t.clientX, y: t.clientY };
+        }
+        return { x: (e as MouseEvent).clientX, y: (e as MouseEvent).clientY };
+      }
+
+      let cloneW = 0;
+      let cloneH = 0;
+
+      const link = card.querySelector<HTMLAnchorElement>(".project-card__entire-link");
+      const href = link?.getAttribute("href");
+
+      function start(e: MouseEvent | TouchEvent) {
+        e.preventDefault();
+        const { x, y } = getCoords(e);
+        startX = x;
+        startY = y;
+        didDrag = false;
+        clone = null;
+
+        moveHandler = (e2: MouseEvent | TouchEvent) => {
+          const { x: cx, y: cy } = getCoords(e2);
+          const dx = cx - startX;
+          const dy = cy - startY;
+          if (!clone && (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD)) {
+            didDrag = true;
+            const rect = card.getBoundingClientRect();
+            cloneW = rect.width;
+            cloneH = rect.height;
+            clone = card.cloneNode(true) as HTMLElement;
+            clone.classList.add("project-card--drag-clone");
+            clone.setAttribute("aria-hidden", "true");
+            clone.style.width = `${cloneW}px`;
+            clone.style.left = `${cx - cloneW / 2}px`;
+            clone.style.top = `${cy - cloneH / 2}px`;
+            document.body.appendChild(clone);
+          }
+          if (clone) {
+            clone.style.left = `${cx - cloneW / 2}px`;
+            clone.style.top = `${cy - cloneH / 2}px`;
+          }
+        };
+        upHandler = () => {
+          document.removeEventListener("mousemove", moveHandler!);
+          document.removeEventListener("touchmove", moveHandler!);
+          document.removeEventListener("mouseup", upHandler!);
+          document.removeEventListener("touchend", upHandler!);
+          if (!didDrag && href) {
+            const a = card.querySelector<HTMLAnchorElement>(".project-card__entire-link");
+            if (a) a.click();
+          }
+          moveHandler = null;
+          upHandler = null;
+        };
+
+        document.addEventListener("mousemove", moveHandler);
+        document.addEventListener("touchmove", moveHandler, { passive: true });
+        document.addEventListener("mouseup", upHandler);
+        document.addEventListener("touchend", upHandler);
+      }
+
+      card.addEventListener("mousedown", start, { passive: false });
+      card.addEventListener("touchstart", start, { passive: false });
+
+      card.addEventListener(
+        "click",
+        (e) => {
+          if (didDrag) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        },
+        true
+      );
+    });
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initSectionReveal);
+    document.addEventListener("DOMContentLoaded", () => {
+      initSectionReveal();
+      initEmailCopy();
+      initProjectCardLinkScramble();
+      initDraggableCards();
+    });
   } else {
     initSectionReveal();
+    initEmailCopy();
+    initProjectCardLinkScramble();
+    initDraggableCards();
   }
 </script>
 
-<style>
-  :root {
-    --home-content-max: 1100px;
-    --work-content-max: 1200px;
-  }
-
-  .section-label {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #999;
-    margin: 0;
-  }
-
-  .hero {
-    position: relative;
-    min-height: 85vh;
-    background: #191853;
-  }
-
-  .hero__bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-  }
-
-  .hero__content {
-    position: relative;
-    z-index: 1;
-    min-height: 85vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 65px var(--content-padding) clamp(3.5rem, 8vh, 6.5rem);
-    margin: 0;
-  }
-
-  .hero__top {
-    padding-top: 0;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .hero__name {
-      animation: heroFadeIn 0.6s var(--motion-ease-out) both;
-    }
-    .hero__tagline {
-      animation: heroFadeIn 0.5s var(--motion-ease-out) 0.08s both;
-    }
-  }
-
-  @keyframes heroFadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(0.4rem);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .hero__name {
-    font-family: "Bai Jamjuree", sans-serif;
-    font-size: clamp(40px, 6vw, 88px);
-    font-weight: 400;
-    line-height: 0.9;
-    margin: 0;
-    margin-left: -5px;
-    letter-spacing: -0.03em;
-    color: #fff;
-  }
-
-  .hero__tagline {
-    font-family: "JetBrains Mono", monospace;
-    font-size: clamp(14px, 1.5vw, 20px);
-    font-weight: 400;
-    line-height: 1.5;
-    margin: 1.75rem 0 0;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.75);
-  }
-
-  .hero__bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 2rem;
-    padding-bottom: 0;
-  }
-
-  .hero__context {
-    display: flex;
-    align-items: center;
-  }
-
-  .hero__context :global(.hero__rotating) {
-    font-family: "JetBrains Mono", monospace;
-    font-size: clamp(1rem, 1.4vw, 1.25rem);
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.55);
-    letter-spacing: 0.04em;
-  }
-
-  .hero__nav {
-    display: flex;
-    gap: 2.5rem;
-  }
-
-  .hero__nav :global(.hero__nav-link) {
-    font-family: "JetBrains Mono", monospace;
-    font-size: clamp(0.875rem, 1.1vw, 1.0625rem);
-    font-weight: 400;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #fff;
-    text-decoration: none;
-    transition: opacity var(--motion-duration) var(--motion-ease);
-  }
-
-  .hero__nav :global(.hero__nav-link:hover) {
-    opacity: 0.6;
-    text-decoration: none;
-  }
-
-  .intro {
-    position: relative;
-    z-index: 2;
-    background: #000;
-    padding: 5rem 0 80px;
-    border-top: none;
-  }
-
-  .intro__inner {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
-  }
-
-  .intro__bio {
-    font-family: "Bai Jamjuree", sans-serif;
-    font-size: 2em;
-    font-weight: 400;
-    line-height: 1.5;
-    letter-spacing: -0.02em;
-    color: #ddd;
-    margin: 0 0 1.5rem;
-    max-width: 100%;
-  }
-
-  /* Desktop: contenidor centrat i amplada màxima per millorar llegibilitat */
-  @media (min-width: 1024px) {
-    .intro__inner {
-      max-width: var(--work-content-max);
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .intro__bio {
-      max-width: 70ch;
-    }
-
-    .site-footer__inner {
-      max-width: var(--home-content-max);
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .intro {
-      padding-left: max(var(--content-padding), 4rem);
-      padding-right: max(var(--content-padding), 4rem);
-    }
-
-    .work,
-    .other-work,
-    .experiments {
-      padding-left: max(var(--content-padding), 4rem);
-      padding-right: max(var(--content-padding), 4rem);
-    }
-  }
-
-  .intro__link {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.9375rem;
-    font-weight: 400;
-    color: #999;
-    text-decoration: none;
-    transition: color var(--motion-duration) var(--motion-ease);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25em;
-  }
-
-  .intro__link:hover {
-    color: #fff;
-    text-decoration: none;
-  }
-
-  .work {
-    position: relative;
-    z-index: 2;
-    background: #000;
-    padding: 6rem var(--content-padding) 5rem;
-    border-top: 0.5px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .work__inner {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-  }
-
-  @media (min-width: 1024px) {
-    .work__inner {
-      max-width: var(--work-content-max);
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-
-  .work__header {
-    margin: 0 0 5rem;
-    padding-bottom: 2rem;
-    padding-left: 1.25rem;
-    border-left: 2px solid rgba(255, 255, 255, 0.2);
-    border-bottom: none;
-  }
-
-  .work__header .section-label {
-    font-size: 0.9375rem;
-    font-weight: 500;
-    color: #ccc;
-    opacity: 0;
-    transform: translateY(0.4rem);
-    transition: opacity var(--motion-duration) var(--motion-ease-out),
-      transform var(--motion-duration) var(--motion-ease-out);
-  }
-
-  .work.in-view .work__header .section-label {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .work__header .section-label,
-    .other-work__header .section-label,
-    .experiments__header .section-label {
-      opacity: 1;
-      transform: none;
-    }
-  }
-
-  .work__list {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5rem 3.5rem;
-  }
-
-
-  @media (prefers-reduced-motion: no-preference) {
-    .project-card {
-      animation: cardReveal 0.55s var(--motion-ease-out) both;
-      animation-delay: calc(var(--stagger, 0) * 0.07s);
-    }
-  }
-
-  @keyframes cardReveal {
-    from {
-      opacity: 0;
-      transform: translateY(1rem);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .project-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 8px;
-    overflow: hidden;
-    background: transparent;
-  }
-
-  .project-card__image-link {
-    display: block;
-    overflow: hidden;
-    background: #0a0a12;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 8px 8px 0 0;
-  }
-
-  .project-card__img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    display: block;
-  }
-
-  .project-card__body {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    gap: 0.5rem;
-    padding: 1.5rem 1.5rem 1.5rem;
-  }
-
-  .project-card__num {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.6875rem;
-    font-weight: 400;
-    letter-spacing: 0.1em;
-    color: #444;
-  }
-
-  .project-card__title {
-    font-family: "Bai Jamjuree", sans-serif;
-    font-size: clamp(1.125rem, 1.8vw, 1.5rem);
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin: 0;
-    color: #fff;
-  }
-
-  .project-card__title a {
-    color: inherit;
-    text-decoration: none;
-    transition: opacity var(--motion-duration) var(--motion-ease);
-  }
-
-  .project-card__title a:hover {
-    text-decoration: none;
-    opacity: 0.85;
-  }
-
-  .project-card__title a:focus-visible,
-  .project-card__link:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.7);
-    outline-offset: 3px;
-  }
-
-  .project-card__subtitle {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: #888;
-    margin: 0;
-  }
-
-  .project-card__meta {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.75rem;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    color: #888;
-    margin-top: 0.75rem;
-    margin-bottom: 12px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
-  .project-card__dot {
-    color: #333;
-  }
-
-  .project-card__link {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.8125rem;
-    font-weight: 400;
-    color: #888;
-    text-decoration: none;
-    margin-top: auto;
-    flex: 1;
-    display: flex;
-    align-items: flex-end;
-    gap: 0.25em;
-    transition: color var(--motion-duration) var(--motion-ease);
-  }
-
-  .project-card__link .link-arrow {
-    display: inline-block;
-    transition: transform var(--motion-duration) var(--motion-ease);
-  }
-
-  .project-card__link:hover {
-    color: #fff;
-    text-decoration: none;
-    opacity: 1;
-  }
-
-  .project-card__link:hover .link-arrow {
-    transform: translateX(0.2em);
-  }
-
-  .project-card__image-link:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.7);
-    outline-offset: 3px;
-  }
-
-  /* ---- Other relevant work ---- */
-  .other-work {
-    position: relative;
-    z-index: 2;
-    background: #000;
-    padding: 5rem var(--content-padding) 5rem;
-    border-top: 0.5px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .other-work__inner {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-  }
-
-  @media (min-width: 1024px) {
-    .other-work__inner {
-      max-width: var(--work-content-max);
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-
-  .other-work__header {
-    margin: 0 0 2.5rem;
-    padding-bottom: 1.25rem;
-    padding-left: 1.25rem;
-    border-left: 2px solid rgba(120, 150, 255, 0.6);
-    border-bottom: none;
-  }
-
-  .other-work__intro {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.875rem;
-    color: #7a8fc4;
-    margin-top: 0.75rem;
-    margin-bottom: 0;
-    margin-left: calc(-1 * (var(--content-padding) + 1.25rem));
-    width: 100vw;
-    padding-left: calc(var(--content-padding) + 1.25rem);
-    padding-right: var(--content-padding);
-    box-sizing: border-box;
-  }
-
-  .other-work__header .section-label {
-    color: #9ab0e8;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    opacity: 0;
-    transform: translateY(0.4rem);
-    transition: opacity var(--motion-duration) var(--motion-ease-out),
-      transform var(--motion-duration) var(--motion-ease-out);
-  }
-
-  .other-work.in-view .other-work__header .section-label {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .other-work__list {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5rem 3.5rem;
-  }
-
-  .other-work-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    border: 1px solid rgba(120, 150, 255, 0.32);
-    border-radius: 8px;
-    overflow: hidden;
-    background: rgba(100, 130, 255, 0.06);
-  }
-
-  .other-work-card__placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 140px;
-    background: rgba(0, 0, 0, 0.15);
-    border-bottom: 1px solid rgba(120, 150, 255, 0.32);
-    text-decoration: none;
-    transition: background 0.2s ease;
-  }
-
-  .other-work-card__placeholder:hover {
-    background: rgba(255, 255, 255, 0.04);
-    text-decoration: none;
-  }
-
-  .other-work-card__placeholder .other-work-card__kind {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.75rem;
-    font-weight: 400;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #555;
-  }
-
-  .other-work-card__image-link {
-    display: block;
-    overflow: hidden;
-    background: rgba(0, 0, 0, 0.2);
-    border-bottom: 1px solid rgba(120, 150, 255, 0.32);
-    border-radius: 8px 8px 0 0;
-  }
-
-  .other-work-card__img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    display: block;
-  }
-
-  .other-work-card__body {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 1.5rem 1.5rem 1.5rem;
-  }
-
-  .other-work-card__kind-label {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.5625rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #6a6a8a;
-  }
-
-  .other-work-card__title {
-    font-family: "Bai Jamjuree", sans-serif;
-    font-size: clamp(1.125rem, 1.8vw, 1.5rem);
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin: 0;
-    color: #fff;
-  }
-
-  .other-work-card__title a {
-    color: inherit;
-    text-decoration: none;
-    transition: opacity var(--motion-duration) var(--motion-ease);
-  }
-
-  .other-work-card__title a:hover {
-    text-decoration: none;
-    opacity: 0.85;
-  }
-
-  .other-work-card__subtitle {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: #888;
-    margin: 0;
-  }
-
-  .other-work-card__meta {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.75rem;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    color: #888;
-  }
-
-  .other-work-card__link {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.8125rem;
-    font-weight: 400;
-    color: #888;
-    text-decoration: none;
-    margin-top: 1.25rem;
-    transition: color var(--motion-duration) var(--motion-ease);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25em;
-  }
-
-  .other-work-card__link:hover {
-    color: #fff;
-    text-decoration: none;
-  }
-
-  /* ---- Experiments ---- */
-  .experiments {
-    position: relative;
-    z-index: 2;
-    background: #000;
-    padding: 5rem var(--content-padding) 5rem;
-    border-top: 0.5px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .experiments__inner {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-  }
-
-  @media (min-width: 1024px) {
-    .experiments__inner {
-      max-width: var(--work-content-max);
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-
-  .experiments__header {
-    margin: 0 0 2.5rem;
-    padding-bottom: 1.25rem;
-    padding-left: 1.25rem;
-    border-left: 2px solid rgba(200, 150, 255, 0.7);
-    border-bottom: none;
-  }
-
-  .experiments__header .section-label {
-    color: #c8b0e8;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    opacity: 0;
-    transform: translateY(0.4rem);
-    transition: opacity var(--motion-duration) var(--motion-ease-out),
-      transform var(--motion-duration) var(--motion-ease-out);
-  }
-
-  .experiments.in-view .experiments__header .section-label {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .experiments__intro {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.875rem;
-    color: #a090b8;
-    margin-top: 0.75rem;
-    margin-bottom: 0;
-    margin-left: calc(-1 * (var(--content-padding) + 1.25rem));
-    width: 100vw;
-    padding-left: calc(var(--content-padding) + 1.25rem);
-    padding-right: var(--content-padding);
-    box-sizing: border-box;
-  }
-
-  .experiments__list {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5rem 3.5rem;
-  }
-
-  .experiment-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    border: 1px solid rgba(200, 150, 255, 0.32);
-    border-radius: 8px;
-    overflow: hidden;
-    background: rgba(180, 140, 255, 0.06);
-  }
-
-  .experiment-card__image-link {
-    display: block;
-    overflow: hidden;
-    background: #0f0a14;
-    border-bottom: 1px solid rgba(200, 150, 255, 0.32);
-    border-radius: 8px 8px 0 0;
-  }
-
-  .experiment-card__img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    display: block;
-  }
-
-  .experiment-card__body {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 1.5rem 1.5rem 1.5rem;
-  }
-
-  .experiment-card__badge {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.5625rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #6a6a8a;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 3px;
-    padding: 0.25rem 0.5rem;
-    width: fit-content;
-  }
-
-  .experiment-card__title {
-    font-family: "Bai Jamjuree", sans-serif;
-    font-size: clamp(1.125rem, 1.8vw, 1.5rem);
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin: 0;
-    color: #fff;
-  }
-
-  .experiment-card__title a {
-    color: inherit;
-    text-decoration: none;
-    transition: opacity var(--motion-duration) var(--motion-ease);
-  }
-
-  .experiment-card__title a:hover {
-    text-decoration: none;
-    opacity: 0.85;
-  }
-
-  .experiment-card__desc {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: #888;
-    margin: 0;
-  }
-
-  .experiment-card__meta {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.75rem;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    color: #888;
-  }
-
-  .experiment-card__link {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.8125rem;
-    font-weight: 400;
-    color: #888;
-    text-decoration: none;
-    margin-top: 1.25rem;
-    transition: color var(--motion-duration) var(--motion-ease);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25em;
-  }
-
-  .experiment-card__link:hover {
-    color: #fff;
-    text-decoration: none;
-  }
-
-  .site-footer {
-    position: relative;
-    z-index: 2;
-    background: #0D0D1A;
-    padding: 2rem var(--content-padding) 3rem;
-    border-top: 0.5px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .site-footer__inner {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .site-footer__contact {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.875rem;
-    color: #999;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .site-footer__contact a {
-    color: #bbb;
-    text-decoration: none;
-    transition: color var(--motion-duration) var(--motion-ease);
-  }
-
-  .site-footer__contact a:hover {
-    color: #fff;
-    text-decoration: none;
-  }
-
-  .site-footer__sep {
-    color: #444;
-  }
-
-  .site-footer__profile {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.8125rem;
-    color: #888;
-    text-decoration: none;
-    transition: color var(--motion-duration) var(--motion-ease);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25em;
-  }
-
-  .site-footer__profile:hover {
-    color: #fff;
-    text-decoration: none;
-  }
-
-  body.theme-light .hero { background: #e0e4f0; }
-  body.theme-light .intro { background: #f0f0f0; }
-  body.theme-light .work { background: #f0f0f0; }
-  body.theme-light .other-work { background: #f0f0f0; }
-  body.theme-light .experiments { background: #f0f0f0; }
-  body.theme-light .site-footer { background: #f0f0f0; border-top-color: rgba(0,0,0,0.08); }
-  body.theme-light .intro__bio { color: #1a1a2e; }
-  body.theme-light .intro__link { color: #555; }
-  body.theme-light .intro__link:hover { color: #000; }
-  body.theme-light .site-footer__contact { color: #555; }
-  body.theme-light .site-footer__contact a { color: #333; }
-  body.theme-light .site-footer__contact a:hover { color: #000; }
-  body.theme-light .site-footer__profile { color: #555; }
-  body.theme-light .site-footer__profile:hover { color: #000; }
-  body.theme-light .hero__name,
-  body.theme-light .hero__tagline { color: #1a1a2e; }
-  body.theme-light .hero__context :global(.hero__rotating) { color: #444; }
-  body.theme-light .hero__nav :global(.hero__nav-link) { color: #1a1a2e; }
-  body.theme-light .project-card { border-color: rgba(0,0,0,0.1); }
-  body.theme-light .project-card__title,
-  body.theme-light .project-card__title a { color: #1a1a2e; }
-  body.theme-light .project-card__subtitle,
-  body.theme-light .project-card__meta,
-  body.theme-light .project-card__link { color: #555; }
-  body.theme-light .project-card__link:hover { color: #000; }
-  body.theme-light .other-work-card { border-color: rgba(0,0,0,0.08); }
-  body.theme-light .other-work-card__title,
-  body.theme-light .other-work-card__title a { color: #1a1a2e; }
-  body.theme-light .other-work-card__subtitle,
-  body.theme-light .other-work-card__meta,
-  body.theme-light .other-work-card__link { color: #555; }
-  body.theme-light .other-work-card__link:hover { color: #000; }
-  body.theme-light .experiment-card { border-color: rgba(0,0,0,0.08); }
-  body.theme-light .experiment-card__title,
-  body.theme-light .experiment-card__title a { color: #1a1a2e; }
-  body.theme-light .experiment-card__desc,
-  body.theme-light .experiment-card__meta,
-  body.theme-light .experiment-card__link { color: #555; }
-  body.theme-light .experiment-card__link:hover { color: #000; }
-  body.theme-light .work__header { border-left-color: rgba(0,0,0,0.25); }
-  body.theme-light .other-work__header .section-label { color: #4a5a9a; }
-  body.theme-light .other-work__intro { color: #4a5a8a; }
-  body.theme-light .other-work__header { border-left-color: rgba(80, 100, 180, 0.5); }
-  body.theme-light .other-work-card { border-color: rgba(80, 100, 180, 0.2); background: rgba(80, 100, 180, 0.04); }
-  body.theme-light .experiments__header .section-label { color: #6a5a8a; }
-  body.theme-light .experiments__header { border-left-color: rgba(120, 80, 160, 0.5); }
-  body.theme-light .experiments__intro { color: #5a4a6a; }
-  body.theme-light .experiment-card { border-color: rgba(120, 80, 160, 0.2); background: rgba(120, 80, 160, 0.04); }
-
-  @media (max-width: 900px) {
-    .hero {
-      min-height: 80vh;
-    }
-
-    .hero__content {
-      min-height: 80vh;
-      padding: 1.5rem var(--content-padding);
-    }
-
-    .hero__top {
-      padding-top: 0.5rem;
-    }
-
-    .hero__name {
-      font-size: clamp(48px, 14vw, 72px);
-    }
-
-    .hero__tagline {
-      font-size: clamp(12px, 3.2vw, 16px);
-    }
-
-    .hero__context :global(.hero__rotating) {
-      font-size: clamp(0.8125rem, 3.5vw, 1rem);
-    }
-
-    .hero__bottom {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1.25rem;
-    }
-
-    .hero__nav {
-      gap: 2rem;
-    }
-
-    .hero__nav :global(.hero__nav-link) {
-      font-size: clamp(0.8125rem, 3.5vw, 1rem);
-    }
-
-    .work {
-      padding: 4rem var(--content-padding) 4rem;
-    }
-
-    .work__header {
-      margin-bottom: 3rem;
-      padding-bottom: 1.5rem;
-    }
-
-    .work__list {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-
-    .other-work {
-      padding: 4rem var(--content-padding) 4rem;
-    }
-
-    .other-work__list {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-
-    .experiments {
-      padding: 4rem var(--content-padding) 4rem;
-    }
-
-    .experiments__list {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-
-    .intro {
-      padding: 3rem var(--content-padding) 4rem;
-    }
-
-    .site-footer__inner {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  }
-</style>

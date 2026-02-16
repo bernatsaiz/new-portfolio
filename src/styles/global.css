@@ -1,30 +1,6 @@
 /* Portfolio — Bernat Saiz
-   Grid: single content width and padding for alignment across sections. */
-
-/* Content grid vars also defined in BaseLayout for interior pages */
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html {
-  font-size: 16px;
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  background: #191853;
-  color: #eaeaea;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 1rem;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
+   Grid: single content width and padding for alignment across sections.
+   BaseLayout.astro defines :root, html, body reset; here only portfolio-specific. */
 
 a {
   color: inherit;

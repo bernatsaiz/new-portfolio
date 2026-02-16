@@ -7,7 +7,8 @@ export interface Experiment {
   tags?: string[];
 }
 
-/** Small experiments and prototypes made with vibe coding (AI-assisted). */
+/** Small experiments and prototypes made with vibe coding (AI-assisted).
+ *  TODO: Replace placeholder titles, URLs and images with real experiments. */
 export const experiments: Experiment[] = [
   {
     title: "Experiment 1",
