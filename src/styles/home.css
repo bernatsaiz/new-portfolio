@@ -224,18 +224,21 @@
   }
 }
 
+.intro__link,
+.intro__link * {
+  cursor: pointer;
+}
+
 .intro__link {
   font-family: "JetBrains Mono", monospace;
   font-size: 0.9375rem;
   font-weight: 400;
-  cursor: pointer;
   color: #aaa;
   text-decoration: none;
   transition: color var(--motion-duration) var(--motion-ease);
   display: inline-flex;
   align-items: center;
   gap: 0.25em;
-  cursor: pointer;
 }
 
 .intro__link:hover {
@@ -367,6 +370,7 @@
 .project-card__link {
   position: relative;
   z-index: 1;
+  cursor: pointer;
 }
 
 .project-card__image-link {
@@ -642,6 +646,7 @@
 .other-work-card__link {
   position: relative;
   z-index: 1;
+  cursor: pointer;
 }
 
 .other-work-card__placeholder {
@@ -832,6 +837,7 @@
 .experiment-card__link {
   position: relative;
   z-index: 1;
+  cursor: pointer;
 }
 
 .experiment-card__image-link {
@@ -969,17 +975,20 @@
   color: #444;
 }
 
+.site-footer__profile,
+.site-footer__profile * {
+  cursor: pointer;
+}
+
 .site-footer__profile {
   font-family: "JetBrains Mono", monospace;
   font-size: 0.8125rem;
   color: #aaa;
-  cursor: pointer;
   text-decoration: none;
   transition: color var(--motion-duration) var(--motion-ease);
   display: inline-flex;
   align-items: center;
   gap: 0.25em;
-  cursor: pointer;
 }
 
 .site-footer__profile:hover {

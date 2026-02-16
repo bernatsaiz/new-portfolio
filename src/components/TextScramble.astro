@@ -68,11 +68,12 @@ const Tag = href ? "a" : tag;
 <style>
   .text-scramble {
     display: inline-block;
-    cursor: default;
+    cursor: inherit;
     transition: opacity var(--motion-duration) var(--motion-ease),
       transform var(--motion-duration) var(--motion-ease);
   }
 
+  /* Quan el scramble és dins d’un enllaç, mostrar cursor pointer */
   a.text-scramble {
     cursor: pointer;
     text-decoration: none;
