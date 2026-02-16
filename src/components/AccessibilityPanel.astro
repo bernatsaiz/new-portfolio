@@ -1,52 +1,52 @@
 ---
 ---
 <div class="a11y-panel-wrapper" id="a11y-panel-wrapper">
-  <button type="button" class="a11y-panel-trigger" aria-label="Opcions d'accessibilitat" aria-expanded="false" aria-controls="a11y-dialog" id="a11y-trigger">
+  <button type="button" class="a11y-panel-trigger" aria-label="Accessibility options" aria-expanded="false" aria-controls="a11y-dialog" id="a11y-trigger">
     <span aria-hidden="true">A</span>
   </button>
   <div class="a11y-panel-backdrop" id="a11y-backdrop" aria-hidden="true" hidden></div>
   <dialog class="a11y-panel-dialog" id="a11y-dialog" aria-labelledby="a11y-dialog-title" aria-describedby="a11y-dialog-desc">
     <div class="a11y-panel-inner">
-      <h2 id="a11y-dialog-title" class="a11y-panel-title">Opcions</h2>
-      <p id="a11y-dialog-desc" class="a11y-panel-desc">Tema, aparença i comportament. Les preferències es guarden.</p>
+      <h2 id="a11y-dialog-title" class="a11y-panel-title">Options</h2>
+      <p id="a11y-dialog-desc" class="a11y-panel-desc">Theme, appearance and behaviour. Preferences are saved.</p>
 
       <div class="a11y-section">
-        <h3 class="a11y-section-title">Tema</h3>
+        <h3 class="a11y-section-title">Theme</h3>
         <div class="a11y-options a11y-options--row">
-          <label><input type="radio" name="a11y-theme" value="dark" checked /> Fosc</label>
-          <label><input type="radio" name="a11y-theme" value="light" /> Clar</label>
+          <label><input type="radio" name="a11y-theme" value="dark" checked /> Dark</label>
+          <label><input type="radio" name="a11y-theme" value="light" /> Light</label>
         </div>
       </div>
 
       <div class="a11y-section">
-        <h3 class="a11y-section-title">Aparença</h3>
+        <h3 class="a11y-section-title">Appearance</h3>
         <div class="a11y-options">
-          <span class="a11y-option-label">Mida del text</span>
-          <label><input type="radio" name="a11y-text-size" value="smaller" data-a11y="a11y-text-smaller" /> Petit</label>
+          <span class="a11y-option-label">Text size</span>
+          <label><input type="radio" name="a11y-text-size" value="smaller" data-a11y="a11y-text-smaller" /> Smaller</label>
           <label><input type="radio" name="a11y-text-size" value="normal" checked data-a11y="" /> Normal</label>
-          <label><input type="radio" name="a11y-text-size" value="larger" data-a11y="a11y-text-larger" /> Gran</label>
+          <label><input type="radio" name="a11y-text-size" value="larger" data-a11y="a11y-text-larger" /> Larger</label>
         </div>
         <div class="a11y-options">
-          <label><input type="checkbox" data-a11y="a11y-contrast-aa" /> Contrast alt</label>
-          <label><input type="checkbox" data-a11y="a11y-monochrome" /> Monocrom</label>
-          <label><input type="checkbox" data-a11y="a11y-line-height" /> Més interlineat</label>
-          <label><input type="checkbox" data-a11y="a11y-line-length" /> Amplada de línia limitada</label>
+          <label><input type="checkbox" data-a11y="a11y-contrast-aa" /> High contrast</label>
+          <label><input type="checkbox" data-a11y="a11y-monochrome" /> Monochrome</label>
+          <label><input type="checkbox" data-a11y="a11y-line-height" /> More line spacing</label>
+          <label><input type="checkbox" data-a11y="a11y-line-length" /> Limit line length</label>
         </div>
       </div>
 
       <div class="a11y-section">
-        <h3 class="a11y-section-title">Comportament</h3>
+        <h3 class="a11y-section-title">Behaviour</h3>
         <div class="a11y-options">
-          <label><input type="checkbox" data-a11y="a11y-no-motion" /> Sense animacions</label>
-          <label><input type="checkbox" data-a11y="a11y-no-smooth-scroll" /> Sense scroll suau</label>
-          <label><input type="checkbox" data-a11y="a11y-focus-strong" /> Focus molt visible</label>
-          <label><input type="checkbox" data-a11y="a11y-touch-targets" /> Botons més grans</label>
+          <label><input type="checkbox" data-a11y="a11y-no-motion" /> No animations</label>
+          <label><input type="checkbox" data-a11y="a11y-no-smooth-scroll" /> No smooth scroll</label>
+          <label><input type="checkbox" data-a11y="a11y-focus-strong" /> Highly visible focus</label>
+          <label><input type="checkbox" data-a11y="a11y-touch-targets" /> Larger buttons</label>
         </div>
       </div>
 
       <div class="a11y-panel-actions">
-        <button type="button" class="a11y-reset" id="a11y-reset">Restaurar</button>
-        <button type="button" class="a11y-close" id="a11y-close">Tancar</button>
+        <button type="button" class="a11y-reset" id="a11y-reset">Reset</button>
+        <button type="button" class="a11y-close" id="a11y-close">Close</button>
       </div>
     </div>
   </dialog>

@@ -38,11 +38,11 @@ export const projects: Project[] = [
     outcome:
       "One of Verificat's most comprehensive investigations, widely referenced by educators, journalists, and civil organizations.",
     images: [
-      "/images/projects/lies-feed-hate/01.jpg",
-      "/images/projects/lies-feed-hate/02.jpg",
-      "/images/projects/lies-feed-hate/03.jpg",
-      "/images/projects/lies-feed-hate/04.jpg",
-      "/images/projects/lies-feed-hate/05.jpg",
+      "/images/projects/lies-feed-hate/01.webp",
+      "/images/projects/lies-feed-hate/02.webp",
+      "/images/projects/lies-feed-hate/03.webp",
+      "/images/projects/lies-feed-hate/04.webp",
+      "/images/projects/lies-feed-hate/05.webp",
     ],
   },
   {
@@ -66,12 +66,12 @@ export const projects: Project[] = [
     outcome:
       "A full interactive prototype demonstrating how political data can be structured as an information system. Bachelor's thesis project.",
     images: [
-      "/images/projects/electoral-information-system/01.jpg",
-      "/images/projects/electoral-information-system/02.png",
-      "/images/projects/electoral-information-system/03.jpg",
-      "/images/projects/electoral-information-system/04.jpg",
-      "/images/projects/electoral-information-system/05.jpg",
-      "/images/projects/electoral-information-system/06.jpg",
+      "/images/projects/electoral-information-system/01.webp",
+      "/images/projects/electoral-information-system/02.webp",
+      "/images/projects/electoral-information-system/03.webp",
+      "/images/projects/electoral-information-system/04.webp",
+      "/images/projects/electoral-information-system/05.webp",
+      "/images/projects/electoral-information-system/06.webp",
     ],
   },
   {
@@ -95,10 +95,10 @@ export const projects: Project[] = [
     outcome:
       "Helped Verificat reach younger audiences while maintaining editorial rigor. Significant growth in social engagement metrics.",
     images: [
-      "/images/projects/verificat-social/01.jpg",
-      "/images/projects/verificat-social/02.jpg",
-      "/images/projects/verificat-social/03.jpg",
-      "/images/projects/verificat-social/04.jpg",
+      "/images/projects/verificat-social/01.webp",
+      "/images/projects/verificat-social/02.webp",
+      "/images/projects/verificat-social/03.webp",
+      "/images/projects/verificat-social/04.webp",
     ],
   },
   {
@@ -121,14 +121,14 @@ export const projects: Project[] = [
     outcome:
       "The project is actively used in schools across Catalonia as part of Verificat's educational programs.",
     images: [
-      "/images/projects/desfake/01.jpg",
-      "/images/projects/desfake/02.jpg",
-      "/images/projects/desfake/03.jpg",
-      "/images/projects/desfake/04.jpg",
-      "/images/projects/desfake/05.jpg",
-      "/images/projects/desfake/06.jpg",
-      "/images/projects/desfake/07.jpg",
-      "/images/projects/desfake/08.jpg",
+      "/images/projects/desfake/01.webp",
+      "/images/projects/desfake/02.webp",
+      "/images/projects/desfake/03.webp",
+      "/images/projects/desfake/04.webp",
+      "/images/projects/desfake/05.webp",
+      "/images/projects/desfake/06.webp",
+      "/images/projects/desfake/07.webp",
+      "/images/projects/desfake/08.webp",
     ],
   },
   {
@@ -147,10 +147,10 @@ export const projects: Project[] = [
     outcome:
       "Multiple published articles and infographics in Forbes Spain and Forbes Women, contributing data-driven depth to the magazine's editorial coverage.",
     images: [
-      "/images/projects/forbes-data-journalism/01.jpg",
-      "/images/projects/forbes-data-journalism/02.jpg",
-      "/images/projects/forbes-data-journalism/03.jpg",
-      "/images/projects/forbes-data-journalism/04.jpg",
+      "/images/projects/forbes-data-journalism/01.webp",
+      "/images/projects/forbes-data-journalism/02.webp",
+      "/images/projects/forbes-data-journalism/03.webp",
+      "/images/projects/forbes-data-journalism/04.webp",
     ],
   },
 ];
