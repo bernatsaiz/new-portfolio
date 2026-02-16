@@ -5,12 +5,17 @@ interface Props {
   title?: string;
   description?: string;
   variant?: "landing" | "interior";
+  ogImage?: string;
 }
 const {
-  title = "Bernat Saiz",
-  description = "Data Visualization & Information Design",
+  title = "Bernat Saiz - Data visualization and information design",
+  description = "Information designer and data journalist focused on visual storytelling for editorial and civic contexts, turning complex data into clear, structured visuals.",
   variant = "landing",
+  ogImage,
 } = Astro.props;
+
+const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.href;
+const imageUrl = ogImage ?? (Astro.site ? new URL("images/SEO%20Card.webp", Astro.site).href : undefined);
 ---
 <!DOCTYPE html>
 <html lang="ca">
@@ -19,6 +24,19 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
+    {imageUrl && (
+      <>
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={imageUrl} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={imageUrl} />
+      </>
+    )}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
