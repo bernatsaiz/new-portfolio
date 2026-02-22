@@ -1205,8 +1205,9 @@ body.theme-light .experiments__intro { color: #666; }
   }
 
   .hero__context-line {
-    font-size: var(--text-2xs);
-    letter-spacing: 0.05em;
+    font-size: var(--text-md);
+    line-height: 1.45;
+    letter-spacing: 0.02em;
   }
 
   .hero__nav {
@@ -1217,8 +1218,9 @@ body.theme-light .experiments__intro { color: #666; }
   }
 
   .hero__nav .hero__nav-link {
-    font-size: var(--text-xs);
-    letter-spacing: 0.07em;
+    font-size: var(--text-md);
+    letter-spacing: 0.08em;
+    line-height: 1.35;
   }
 
   .intro,
