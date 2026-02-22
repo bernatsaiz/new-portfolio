@@ -200,7 +200,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     position: relative;
     z-index: 2;
     display: inline-block;
-    font-size: 0.875rem;
+    font-size: var(--text-sm);
     letter-spacing: 0.06em;
     color: rgba(255, 255, 255, 0.6);
     text-decoration: none;
@@ -244,7 +244,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   .bcn-page__title {
     font-family: "Bai Jamjuree", sans-serif;
-    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-size: var(--text-display-city);
     font-weight: 400;
     letter-spacing: -0.02em;
     margin: 0 0 0.35rem 0;
@@ -252,7 +252,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   }
 
   .bcn-page__subtitle {
-    font-size: clamp(0.8125rem, 1.2vw, 0.9375rem);
+    font-size: var(--text-sm-fluid);
     letter-spacing: 0.08em;
     color: rgba(255, 255, 255, 0.5);
     margin: 0;
@@ -286,7 +286,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   .bcn-card__label {
     display: block;
-    font-size: 0.625rem;
+    font-size: var(--text-3xs);
     letter-spacing: 0.12em;
     color: rgba(255, 255, 255, 0.45);
     text-transform: uppercase;
@@ -295,7 +295,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   .bcn-card__value {
     margin: 0;
-    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    font-size: var(--text-display-card);
     font-weight: 400;
     color: rgba(255, 255, 255, 0.95);
     line-height: 1.2;
@@ -315,7 +315,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   }
 
   .bcn-card__weather-icon {
-    font-size: 2rem;
+    font-size: var(--text-3xl);
     line-height: 1;
   }
 
@@ -324,7 +324,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   }
 
   .bcn-card__value--condition {
-    font-size: 0.9375rem;
+    font-size: var(--text-md);
     color: rgba(255, 255, 255, 0.7);
   }
 
@@ -369,7 +369,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   }
 
   .bcn-card__meta {
-    font-size: 0.6875rem;
+    font-size: var(--text-2xs);
     letter-spacing: 0.06em;
     color: rgba(255, 255, 255, 0.4);
     margin: 0.5rem 0 0 0;
@@ -378,9 +378,33 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   .bcn-page__updated {
     position: relative;
     z-index: 2;
-    font-size: 0.6875rem;
+    font-size: var(--text-2xs);
     letter-spacing: 0.08em;
     color: rgba(255, 255, 255, 0.35);
     margin: clamp(2rem, 6vw, 3rem) 0 0 0;
+  }
+
+  @media (max-width: 640px) {
+    .bcn-page {
+      padding-top: 1.5rem;
+      padding-bottom: 2.5rem;
+    }
+
+    .bcn-page__back {
+      margin-bottom: 1.5rem;
+    }
+
+    .bcn-page__header {
+      margin-bottom: 2rem;
+    }
+
+    .bcn-page__grid {
+      grid-template-columns: 1fr;
+      gap: 0.9rem;
+    }
+
+    .bcn-card {
+      padding: 1.1rem;
+    }
   }
 </style>

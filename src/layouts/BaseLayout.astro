@@ -56,7 +56,7 @@ const imageUrl = ogImage ?? (Astro.site ? new URL("images/SEO%20Card.webp", Astr
 <style is:global>
   :root {
     --content-max: 1040px;
-    --content-padding: clamp(2rem, 5vw, 4rem);
+    --content-padding: clamp(1rem, 5vw, 4rem);
     --motion-duration: 0.35s;
     --motion-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
     --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -66,6 +66,26 @@ const imageUrl = ogImage ?? (Astro.site ? new URL("images/SEO%20Card.webp", Astr
     --focus-width: 3px;
     --focus-offset: 3px;
     --line-length-max: 70ch;
+    --text-3xs: 0.625rem;
+    --text-2xs: 0.75rem;
+    --text-xs: 0.8125rem;
+    --text-sm: 0.875rem;
+    --text-md: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+    --text-4xl: 2.25rem;
+    --text-5xl: 3rem;
+    --text-display-hero: clamp(2.25rem, 5vw, 4rem);
+    --text-display-hero-mobile: clamp(2rem, 10vw, 3.25rem);
+    --text-display-page: clamp(1.75rem, 4vw, 2.75rem);
+    --text-display-intro: clamp(1.5rem, 3vw, 2rem);
+    --text-display-city: clamp(2.25rem, 8vw, 4.25rem);
+    --text-display-card: clamp(1.25rem, 2.2vw, 1.75rem);
+    --text-sm-fluid: clamp(0.875rem, 1.2vw, 1rem);
+    --text-md-fluid: clamp(1rem, 1.6vw, 1.25rem);
+    --text-ui-fluid: clamp(1rem, 2.8vw, 1.25rem);
   }
 
   @media (prefers-contrast: more) {
@@ -104,7 +124,7 @@ const imageUrl = ogImage ?? (Astro.site ? new URL("images/SEO%20Card.webp", Astr
   }
 
   html {
-    font-size: 18px;
+    font-size: 16px;
     scroll-behavior: smooth;
   }
 
@@ -125,8 +145,8 @@ const imageUrl = ogImage ?? (Astro.site ? new URL("images/SEO%20Card.webp", Astr
     background: #000;
     color: #eaeaea;
     font-family: "JetBrains Mono", monospace;
-    font-size: 1.0625rem;
-    line-height: 1.55;
+    font-size: var(--text-md);
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
@@ -207,7 +227,7 @@ const imageUrl = ogImage ?? (Astro.site ? new URL("images/SEO%20Card.webp", Astr
   /* ---- Interior page typography (display = Bai Jamjuree) ---- */
   .body--interior h1 {
     font-family: "Bai Jamjuree", sans-serif;
-    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    font-size: var(--text-display-page);
     font-weight: 400;
     line-height: 1.1;
     letter-spacing: -0.02em;
@@ -217,7 +237,7 @@ const imageUrl = ogImage ?? (Astro.site ? new URL("images/SEO%20Card.webp", Astr
 
   .body--interior h2 {
     font-family: "JetBrains Mono", monospace;
-    font-size: 0.75rem;
+    font-size: var(--text-2xs);
     font-weight: 400;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -227,7 +247,7 @@ const imageUrl = ogImage ?? (Astro.site ? new URL("images/SEO%20Card.webp", Astr
 
   .body--interior p {
     font-family: "JetBrains Mono", monospace;
-    font-size: 0.9375rem;
+    font-size: var(--text-md);
     line-height: 1.7;
     color: #ccc;
     margin: 0 0 1rem;

@@ -248,7 +248,7 @@ import "../styles/home.css";
       const scrambleEl = card.querySelector<HTMLElement>(".project-card__link .text-scramble");
       if (!scrambleEl) return;
       const trigger = () => {
-        scrambleEl.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+        scrambleEl.dispatchEvent(new MouseEvent("mouseenter"));
       };
       card.addEventListener("mouseenter", trigger);
       card.addEventListener("focusin", trigger);
