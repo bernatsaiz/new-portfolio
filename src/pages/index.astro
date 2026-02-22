@@ -204,7 +204,7 @@ import "../styles/home.css";
   <footer class="site-footer" id="contact">
     <div class="site-footer__inner">
       <p class="site-footer__contact">
-        <button type="button" class="site-footer__email-trigger" data-email="bernatsaiz@gmail.com" aria-label="Email, click to copy">Email</button>
+        <button type="button" class="site-footer__email-trigger" data-email="bernatsaiz@gmail.com" aria-label="Email (Click to copy)">Email (Click to copy)</button>
         <span class="site-footer__sep">&middot;</span>
         <a href="https://www.linkedin.com/in/bernatsaiz/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn (opens in new window)">LinkedIn</a>
       </p>
@@ -258,22 +258,17 @@ import "../styles/home.css";
   const DRAG_THRESHOLD = 10;
 
   function initDraggableCards() {
+    const canDragCards = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (!canDragCards) return;
+
     const cards = document.querySelectorAll<HTMLElement>(".project-card");
     cards.forEach((card) => {
       let startX = 0;
       let startY = 0;
       let clone: HTMLElement | null = null;
       let didDrag = false;
-      let moveHandler: ((e: MouseEvent | TouchEvent) => void) | null = null;
+      let moveHandler: ((e: MouseEvent) => void) | null = null;
       let upHandler: (() => void) | null = null;
-
-      function getCoords(e: MouseEvent | TouchEvent): { x: number; y: number } {
-        if ("touches" in e) {
-          const t = e.type.includes("end") || e.type.includes("cancel") ? (e as TouchEvent).changedTouches[0] : (e as TouchEvent).touches[0];
-          return { x: t.clientX, y: t.clientY };
-        }
-        return { x: (e as MouseEvent).clientX, y: (e as MouseEvent).clientY };
-      }
 
       let cloneW = 0;
       let cloneH = 0;
@@ -281,16 +276,16 @@ import "../styles/home.css";
       const link = card.querySelector<HTMLAnchorElement>(".project-card__entire-link");
       const href = link?.getAttribute("href");
 
-      function start(e: MouseEvent | TouchEvent) {
+      function start(e: MouseEvent) {
         e.preventDefault();
-        const { x, y } = getCoords(e);
-        startX = x;
-        startY = y;
+        startX = e.clientX;
+        startY = e.clientY;
         didDrag = false;
         clone = null;
 
-        moveHandler = (e2: MouseEvent | TouchEvent) => {
-          const { x: cx, y: cy } = getCoords(e2);
+        moveHandler = (e2: MouseEvent) => {
+          const cx = e2.clientX;
+          const cy = e2.clientY;
           const dx = cx - startX;
           const dy = cy - startY;
           if (!clone && (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD)) {
@@ -313,9 +308,7 @@ import "../styles/home.css";
         };
         upHandler = () => {
           document.removeEventListener("mousemove", moveHandler!);
-          document.removeEventListener("touchmove", moveHandler!);
           document.removeEventListener("mouseup", upHandler!);
-          document.removeEventListener("touchend", upHandler!);
           if (!didDrag && href) {
             const a = card.querySelector<HTMLAnchorElement>(".project-card__entire-link");
             if (a) a.click();
@@ -325,13 +318,10 @@ import "../styles/home.css";
         };
 
         document.addEventListener("mousemove", moveHandler);
-        document.addEventListener("touchmove", moveHandler, { passive: true });
         document.addEventListener("mouseup", upHandler);
-        document.addEventListener("touchend", upHandler);
       }
 
-      card.addEventListener("mousedown", start, { passive: false });
-      card.addEventListener("touchstart", start, { passive: false });
+      card.addEventListener("mousedown", start);
 
       card.addEventListener(
         "click",
